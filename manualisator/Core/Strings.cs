@@ -11,13 +11,16 @@ namespace manualisator.Core
         public static string Language_DE = "de";
         public static string Language_EN = "en";
 
+
+        public static string StepCreatingTemplateLookup = "§Schritt {0}: Lese Namen bestehender Dokumentbausteine ein";
+        public static string StepLookingUpBookmarksInDocuments = "§Schritt {0}: Suche {1} Lesezeichen in {2} Dokumenten";
         public static string OpeningExistingDatabase = "Öffne bestehende Datenbank '{0}'.";
         public static string CreatingNewDatabase = "Lege Datenbank '{0}' neu an.";
 
         public static string TotalTimeToCreateAllManuals = "Gesamte Laufzeit für alle {0} Handbücher: {1}.";
         public static string StepCreatingManualForDeviceInLanguage = "§Schritt {0}: Erzeuge {1} für {2} in der Sprache {3}.";
-        public static string FailedAfterTime = "- Fehlgeschlagen nach {0}.";
-        public static string SucceededAfterTime = "- Erfolgreich nach {0}.";
+        public static string FailedAfterTime = "- Fehlgeschlagen nach {0:hh\\:mm\\:ss}.";
+        public static string SucceededAfterTime = "- Erfolgreich nach {0:hh\\:mm\\:ss}.";
 
         public static string StepReadingExcelSheets = "§Handbuch '{0}' wird erzeugt";
         public static string StepConvertingDocToDocx = "§Schritt {0}: Umwandlung von .doc zu .docx.";
@@ -105,6 +108,9 @@ namespace manualisator.Core
         public static string FilesHasSoManyBookmarks = "- Das Dokument '{0}' hat {1} Textmarken";
 
         public static string ErrorDocumentFailedToConvert = "Fehler E15 beim Bearbeiten von {0}: Ausnahmebedingung aufgetreten";
+        public static string ErrorBookmarkDoesNotExistAnywhere = "Fehler E16: Das Lesezeichen '{0}' existiert in keinem der angegebenen Dokumente";
+        public static string ErrorFileHasNoReferencedBookmarks = "Fehler E17: Die Datei '{0}' enthält keine benutzten Lesezeichen";
+
 
         public static string SpecialHandlingForTemplateAddDirectly = "- Das Dokument '{0}' muss direkt eingefügt werden";
     }

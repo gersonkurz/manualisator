@@ -122,12 +122,12 @@ namespace manualisator.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool UseLanguageSpecificBookmarks {
+        public bool UseBookmarksFromExcelSheet {
             get {
-                return ((bool)(this["UseLanguageSpecificBookmarks"]));
+                return ((bool)(this["UseBookmarksFromExcelSheet"]));
             }
             set {
-                this["UseLanguageSpecificBookmarks"] = value;
+                this["UseBookmarksFromExcelSheet"] = value;
             }
         }
         
@@ -152,6 +152,18 @@ namespace manualisator.Properties {
             }
             set {
                 this["UseFilenameTemplate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CreateDocumentSortOrderFromBookmarks {
+            get {
+                return ((bool)(this["CreateDocumentSortOrderFromBookmarks"]));
+            }
+            set {
+                this["CreateDocumentSortOrderFromBookmarks"] = value;
             }
         }
     }

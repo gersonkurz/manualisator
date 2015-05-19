@@ -25,6 +25,7 @@ namespace manualisator.Core
         public string TargetFilename;  // Zieldatei
         public string Special;         // Spezial
         public readonly List<string> Filenames = new List<string>();
+        public readonly List<string> Bookmarks = new List<string>();
 
         public PartialManualContent(IDisplayCallback displayCallback)
         {
@@ -79,7 +80,17 @@ namespace manualisator.Core
                 return false;
             }
 
-            if( Language.ToLower().Equals("deutsch") )
+            for (int i = 2; i < 60; ++i )
+            {
+                string bookmarkName = "";
+                if (!ReadStringValue(values, 3, i, ref bookmarkName))
+                    break;
+
+                Trace.TraceInformation("bookmarkName: {0}", bookmarkName);
+                Bookmarks.Add(bookmarkName);
+            }
+
+            if (Language.ToLower().Equals("deutsch"))
             {
                 if ((expectedLanguage != Strings.Language_DE) && !string.IsNullOrEmpty(expectedLanguage))
                 {
@@ -90,7 +101,7 @@ namespace manualisator.Core
                 expectedLanguage = Language;
                 DisplayCallback.AddInformation(Strings.LanguageResetToThis, Language);
             }
-            else if( Language.ToLower().Equals("englisch") )
+            else if (Language.ToLower().Equals("englisch"))
             {
                 if ((expectedLanguage != Strings.Language_EN) && !string.IsNullOrEmpty(expectedLanguage))
                 {
@@ -101,9 +112,9 @@ namespace manualisator.Core
                 expectedLanguage = Strings.Language_EN;
                 DisplayCallback.AddInformation(Strings.LanguageResetToThis, Language);
             }
-            else 
+            else
             {
-                DisplayCallback.AddError(Strings.ErrorLanguageIsUnknown, 
+                DisplayCallback.AddError(Strings.ErrorLanguageIsUnknown,
                     filename, Language);
                 return false;
             }
@@ -212,6 +223,18 @@ namespace manualisator.Core
             }
             return true;
         }
+
+        private bool ReadStringValue(object[,] values, int i, int j, ref string actualValue)
+        {
+            object o = values[i, j];
+            actualValue = o as string;
+            if (string.IsNullOrEmpty(actualValue))
+            {
+                return false;
+            }
+            return true;
+        }
+
 
         private bool ReadRequiredValue(object[,] values, int i, int j, out DateTime actualValue, string fieldName)
         {

@@ -24,9 +24,10 @@ namespace manualisator
             tbTemplatesDirectory.Text = Program.Settings.TemplatesDirectory;
             tbFilesDirectory.Text = Program.Settings.FilesDirectory;
             tbFilenameTemplate.Text = Program.Settings.FilenameTemplate;
-            checkBox1.Checked = Program.Settings.UseLanguageSpecificBookmarks;
+            checkBox1.Checked = Program.Settings.UseBookmarksFromExcelSheet;
             checkBox2.Checked = Program.Settings.UseFilenameTemplate;
             tbFilenameTemplate.Enabled = checkBox2.Checked;
+            checkBox3.Checked = Program.Settings.CreateDocumentSortOrderFromBookmarks;
         }
 
         private void btOK_Click(object sender, EventArgs e)
@@ -73,8 +74,9 @@ namespace manualisator
             Program.Settings["TemplatesDirectory"] = tbTemplatesDirectory.Text;
             Program.Settings["FilesDirectory"] = tbFilesDirectory.Text;
             Program.Settings["FilenameTemplate"] = tbFilenameTemplate.Text;
-            Program.Settings["UseLanguageSpecificBookmarks"] = checkBox1.Checked ? true : false;
+            Program.Settings["UseBookmarksFromExcelSheet"] = checkBox1.Checked ? true : false;
             Program.Settings["UseFilenameTemplate"] = checkBox2.Checked ? true : false;
+            Program.Settings["CreateDocumentSortOrderFromBookmarks"] = checkBox3.Checked ? true : false;            
             Program.PersistentSettings.Save();
             Close();
         }

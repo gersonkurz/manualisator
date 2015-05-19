@@ -26,7 +26,7 @@
     <Setting Name="FilenameTemplate" Type="System.String" Scope="User">
       <Value Profile="(Default)">Product_Description_{1}_{2}.docx</Value>
     </Setting>
-    <Setting Name="UseLanguageSpecificBookmarks" Type="System.Boolean" Scope="User">
+    <Setting Name="UseBookmarksFromExcelSheet" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="BaseDirectory" Type="System.String" Scope="User">
@@ -34,6 +34,9 @@
     </Setting>
     <Setting Name="UseFilenameTemplate" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="CreateDocumentSortOrderFromBookmarks" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>
