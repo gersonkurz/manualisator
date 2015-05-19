@@ -24,22 +24,27 @@ namespace manualisator.Core
                 
         public static IEnumerable<string> EnumerateDocuments()
         {
-            string[] folders = Program.Settings.FilesDirectory.Split(';');
+            string[] folders = Program.Settings.FilesDirectory.Split(';', ',');
             string baseDirectory = Program.Settings.BaseDirectory;
 
-            Trace.TraceInformation("EnumerateDocuments(baseDirectory: {0}, filesDirectory: {1})");
+            Trace.TraceInformation("EnumerateDocuments(baseDirectory: {0}, filesDirectory: {1})", baseDirectory, Program.Settings.FilesDirectory);
             foreach(string folderName in folders)
             {
-                foreach (string filename in Directory.GetFiles(Path.Combine(baseDirectory, folderName)))
+                string folderPath = Path.Combine(baseDirectory, folderName);
+                if (Directory.Exists(folderPath))
                 {
-                    yield return filename;
+                    foreach (string filename in Directory.GetFiles(folderPath))
+                    {
+                        Trace.TraceInformation("EnumerateDocuments() yields '%s'", filename);
+                        yield return filename;
+                    }
                 }
             }
         }
         
         public static string GetDocumentFilename(string fileName)
         {
-            string[] folders = Program.Settings.FilesDirectory.Split(';');
+            string[] folders = Program.Settings.FilesDirectory.Split(';', ',');
             string baseDirectory = Program.Settings.BaseDirectory;
 
             foreach (string folderName in folders)

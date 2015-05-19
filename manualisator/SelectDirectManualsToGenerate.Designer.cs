@@ -32,7 +32,6 @@
             this.btOK = new System.Windows.Forms.Button();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lbWarning = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -40,9 +39,10 @@
             // 
             this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btCancel.Location = new System.Drawing.Point(548, 530);
+            this.btCancel.Location = new System.Drawing.Point(949, 694);
+            this.btCancel.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.btCancel.Name = "btCancel";
-            this.btCancel.Size = new System.Drawing.Size(130, 37);
+            this.btCancel.Size = new System.Drawing.Size(176, 44);
             this.btCancel.TabIndex = 0;
             this.btCancel.Text = "&Abbrechen";
             this.btCancel.UseVisualStyleBackColor = true;
@@ -50,9 +50,10 @@
             // btOK
             // 
             this.btOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btOK.Location = new System.Drawing.Point(412, 530);
+            this.btOK.Location = new System.Drawing.Point(753, 694);
+            this.btOK.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.btOK.Name = "btOK";
-            this.btOK.Size = new System.Drawing.Size(130, 37);
+            this.btOK.Size = new System.Drawing.Size(176, 44);
             this.btOK.TabIndex = 1;
             this.btOK.Text = "&OK";
             this.btOK.UseVisualStyleBackColor = true;
@@ -64,14 +65,14 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2});
+            this.columnHeader1});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.listView1.Location = new System.Drawing.Point(8, 10);
+            this.listView1.Location = new System.Drawing.Point(14, 19);
+            this.listView1.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(673, 508);
+            this.listView1.Size = new System.Drawing.Size(1111, 663);
             this.listView1.TabIndex = 2;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -81,34 +82,34 @@
             // columnHeader1
             // 
             this.columnHeader1.Text = "Name";
-            this.columnHeader1.Width = 200;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Sprache";
+            this.columnHeader1.Width = 300;
             // 
             // lbWarning
             // 
             this.lbWarning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lbWarning.AutoSize = true;
+            this.lbWarning.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbWarning.ForeColor = System.Drawing.Color.Red;
-            this.lbWarning.Location = new System.Drawing.Point(24, 538);
+            this.lbWarning.Location = new System.Drawing.Point(9, 704);
+            this.lbWarning.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lbWarning.Name = "lbWarning";
-            this.lbWarning.Size = new System.Drawing.Size(168, 13);
+            this.lbWarning.Size = new System.Drawing.Size(279, 25);
             this.lbWarning.TabIndex = 3;
             this.lbWarning.Text = "WARNUNGSTEXT STEHT HIER";
             // 
             // SelectDirectManualsToGenerate
             // 
             this.AcceptButton = this.btOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btCancel;
-            this.ClientSize = new System.Drawing.Size(695, 579);
+            this.ClientSize = new System.Drawing.Size(1139, 753);
             this.Controls.Add(this.lbWarning);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.btOK);
             this.Controls.Add(this.btCancel);
+            this.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.Name = "SelectDirectManualsToGenerate";
             this.Text = "Handbuch auswählen";
             this.ResumeLayout(false);
@@ -123,6 +124,5 @@
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.Label lbWarning;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
     }
 }

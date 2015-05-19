@@ -86,18 +86,14 @@ namespace manualisator.Core
 
         private bool CreateManual(string excelsheet_filename)
         {
-            if (!ImportManualFromExcelSheetWithLanguage(excelsheet_filename))
+            if (!ImportManualFromExcelSheet(excelsheet_filename))
                 return false;
 
             return true;
         }
 
-        private bool ImportManualFromExcelSheetWithLanguage(string excelsheet_filename)
-        {
-            DisplayCallback.AddInformation("");
-            
-            DisplayCallback.AddInformation(Strings.ImportingManualInLanguage, excelsheet_filename, "???");
-
+        private bool ImportManualFromExcelSheet(string excelsheet_filename)
+        {          
             try
             {
                 string language;
@@ -123,6 +119,7 @@ namespace manualisator.Core
                 m.TypeOfManual = first.TypeOfManual;
                 m.Template = first.Template;
                 m.TargetFilename = first.TargetFilename;
+                Trace.TraceInformation("m.TargetFilename: {0}", m.TargetFilename);
                 return CreateManual(m, first.Filenames);
             }
             catch (Exception e)
@@ -134,7 +131,6 @@ namespace manualisator.Core
 
         private bool CreateManual(Manual m, List<string> filenames)
         {
-            DisplayCallback.AddInformation("");
             DisplayCallback.AddInformation(Strings.StepCreatingManualForDeviceInLanguage, CurrentStep++,
                 m.Name,
                 m.Device,
@@ -162,7 +158,7 @@ namespace manualisator.Core
                 Word._Document newDocument = Word.Documents.Add(ref templatePath);
                 try
                 {
-                    int index = 0;
+                    int index = 1;
 
                     foreach (string filename in filenames)
                     {
@@ -178,8 +174,8 @@ namespace manualisator.Core
                             failed = true;
                             continue;
                         }
-
-                        DisplayCallback.AddInformation("^- {0} / {1}: '{2}'", index++, filenames.Count, filename);
+                        double percentage = index / ((filenames.Count / 100.0));
+                        DisplayCallback.AddInformation("^- {0}/{1} = {2:##.##}%: '{3}'", index++, filenames.Count, percentage, TemplateLookup[key]);
                         if (Tools.IsSpecialTemplate(filename))
                         {
                             AddDocumentToDocument(newDocument, TemplateLookup[key], pageBreak: true, manual: m);

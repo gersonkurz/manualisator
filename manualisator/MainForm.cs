@@ -281,14 +281,19 @@ namespace manualisator
 
         private void einstellungenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            new SettingsForm().ShowDialog();
-            FirstCallToReport = true;
-            UpdateMenuAvailability();
-            if (VerifyThatBaseDirectoryIsValid())
+            string oldBaseDirectory = Program.Settings.BaseDirectory;
+            if( new SettingsForm().ShowDialog() == DialogResult.OK )
             {
-                AddInformation(string.Format("Das Basis-Verzeichnis ist '{0}'.", Program.Settings.BaseDirectory));
+                FirstCallToReport = true;
+                UpdateMenuAvailability();
+                if (VerifyThatBaseDirectoryIsValid())
+                {
+                    if (!oldBaseDirectory.Equals(Program.Settings.BaseDirectory))
+                    {
+                        AddInformation(string.Format("Das Basis-Verzeichnis ist jetzt '{0}'.", Program.Settings.BaseDirectory));
+                    }
+                }
             }
-
         }
 
         private void letzteTracedateiÖffnenToolStripMenuItem_Click(object sender, EventArgs e)

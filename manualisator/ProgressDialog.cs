@@ -78,20 +78,17 @@ namespace manualisator
 
         public void AddInformation(string msg)
         {
-            Trace.TraceInformation(msg);
             this.Invoke(new UpdateDisplay(UpdateInformation), msg);
         }
 
         public void AddWarning(string msg)
         {
-            Trace.TraceWarning(msg);
             ++Warnings;
             this.Invoke(new UpdateDisplay(UpdateWarning), msg);
         }
 
         public void AddError(string msg)
         {
-            Trace.TraceError(msg);
             ++Errors;
             this.Invoke(new UpdateDisplay(UpdateError), msg);
         }
@@ -99,14 +96,21 @@ namespace manualisator
         public void UpdateInformation(string msg)
         {
             LbText.ForeColor = Color.Black;
-            LbText.Text = msg;
             MainForm.AddInformation(msg);
+            LbText.Text = SkipSpecialChars(msg);
+        }
+
+        private string SkipSpecialChars(string msg)
+        {
+            if (msg.StartsWith("^") || msg.StartsWith("§"))
+                return msg.Substring(1);
+            return msg;
         }
 
         private void UpdateError(string msg)
         {
             LbErrors.Text = string.Format("Fehler: {0}", Errors);
-            LbText.Text = msg;
+            LbText.Text = SkipSpecialChars(msg);
             LbText.ForeColor = Color.Red;
             MainForm.AddError(msg);
         }
@@ -114,7 +118,7 @@ namespace manualisator
         private void UpdateWarning(string msg)
         {
             LbWarnings.Text = string.Format("Warnungen: {0}", Warnings);
-            LbText.Text = msg;
+            LbText.Text = SkipSpecialChars(msg);
             LbText.ForeColor = Color.DarkRed;
             MainForm.AddWarning(msg);
         }
