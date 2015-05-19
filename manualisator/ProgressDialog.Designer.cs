@@ -41,17 +41,19 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(23, 25);
+            this.progressBar1.Location = new System.Drawing.Point(29, 39);
+            this.progressBar1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(914, 50);
+            this.progressBar1.Size = new System.Drawing.Size(1142, 78);
             this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.progressBar1.TabIndex = 0;
             // 
             // BtCancel
             // 
-            this.BtCancel.Location = new System.Drawing.Point(376, 186);
+            this.BtCancel.Location = new System.Drawing.Point(470, 291);
+            this.BtCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.BtCancel.Name = "BtCancel";
-            this.BtCancel.Size = new System.Drawing.Size(213, 51);
+            this.BtCancel.Size = new System.Drawing.Size(266, 37);
             this.BtCancel.TabIndex = 1;
             this.BtCancel.Text = "&Abbrechen";
             this.BtCancel.UseVisualStyleBackColor = true;
@@ -60,36 +62,43 @@
             // LbText
             // 
             this.LbText.AutoSize = true;
-            this.LbText.Location = new System.Drawing.Point(28, 86);
+            this.LbText.Font = new System.Drawing.Font("Segoe UI Light", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LbText.Location = new System.Drawing.Point(35, 134);
+            this.LbText.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.LbText.Name = "LbText";
-            this.LbText.Size = new System.Drawing.Size(403, 17);
+            this.LbText.Size = new System.Drawing.Size(600, 32);
             this.LbText.TabIndex = 2;
             this.LbText.Text = "BESCHREIBUNG DES AKTUELLEN VORGANGS STEHT HIER";
             // 
             // LbElapsed
             // 
             this.LbElapsed.AutoSize = true;
-            this.LbElapsed.Location = new System.Drawing.Point(28, 151);
+            this.LbElapsed.Location = new System.Drawing.Point(35, 236);
+            this.LbElapsed.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.LbElapsed.Name = "LbElapsed";
-            this.LbElapsed.Size = new System.Drawing.Size(156, 17);
+            this.LbElapsed.Size = new System.Drawing.Size(215, 25);
             this.LbElapsed.TabIndex = 3;
             this.LbElapsed.Text = "Dauer: - Wird ermittelt -";
             // 
             // LbErrors
             // 
             this.LbErrors.AutoSize = true;
-            this.LbErrors.Location = new System.Drawing.Point(484, 151);
+            this.LbErrors.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LbErrors.Location = new System.Drawing.Point(605, 236);
+            this.LbErrors.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.LbErrors.Name = "LbErrors";
-            this.LbErrors.Size = new System.Drawing.Size(108, 17);
+            this.LbErrors.Size = new System.Drawing.Size(151, 25);
             this.LbErrors.TabIndex = 4;
             this.LbErrors.Text = "Fehler: - keine -";
             // 
             // LbWarnings
             // 
             this.LbWarnings.AutoSize = true;
-            this.LbWarnings.Location = new System.Drawing.Point(731, 151);
+            this.LbWarnings.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LbWarnings.Location = new System.Drawing.Point(914, 236);
+            this.LbWarnings.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.LbWarnings.Name = "LbWarnings";
-            this.LbWarnings.Size = new System.Drawing.Size(144, 17);
+            this.LbWarnings.Size = new System.Drawing.Size(203, 25);
             this.LbWarnings.TabIndex = 5;
             this.LbWarnings.Text = "Warnungen: - Keine -";
             // 
@@ -104,9 +113,9 @@
             // 
             // ProgressDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(965, 249);
+            this.ClientSize = new System.Drawing.Size(1206, 341);
             this.ControlBox = false;
             this.Controls.Add(this.LbWarnings);
             this.Controls.Add(this.LbErrors);
@@ -114,6 +123,8 @@
             this.Controls.Add(this.LbText);
             this.Controls.Add(this.BtCancel);
             this.Controls.Add(this.progressBar1);
+            this.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ProgressDialog";

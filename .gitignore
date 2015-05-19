@@ -26,3 +26,7 @@
 *.exe
 *.out
 *.app
+
+manualisator/bin/*
+manualisator/obj/*
+*.suo

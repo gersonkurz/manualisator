@@ -34,7 +34,6 @@ namespace manualisator
             {
                 AddInformation(string.Format("Das Basis-Verzeichnis ist '{0}'.", Program.Settings.BaseDirectory));
             }
-            
 
             this.Text = string.Format("manualisator {0}", myAssembly.GetName().Version.ToString());
             UpdateMenuAvailability();
@@ -285,6 +284,11 @@ namespace manualisator
             new SettingsForm().ShowDialog();
             FirstCallToReport = true;
             UpdateMenuAvailability();
+            if (VerifyThatBaseDirectoryIsValid())
+            {
+                AddInformation(string.Format("Das Basis-Verzeichnis ist '{0}'.", Program.Settings.BaseDirectory));
+            }
+
         }
 
         private void letzteTracedateiÖffnenToolStripMenuItem_Click(object sender, EventArgs e)

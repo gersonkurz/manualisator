@@ -15,58 +15,17 @@ namespace manualisator.Core
         {
             get
             {
-                string result = GetStringValue("UseLanguageSpecificBookmarks", "true");
+                string result = Program.Settings.UseLanguageSpecificBookmarks;
                 return result.Equals("true", StringComparison.OrdinalIgnoreCase) ||
                         result.Equals("yes", StringComparison.OrdinalIgnoreCase) ||
                         result.Equals("1", StringComparison.OrdinalIgnoreCase);
             }
         }
-
-
-        public static string BaseDirectory
-        {
-            get
-            {
-                return GetStringValue("BaseDirectory", ".");
-            }
-        }
-
-        public static string TemplateFilename_DE
-        {
-            get
-            {
-                return GetStringValue("TemplateFilename_DE", "template_de.dotx");
-            }
-        }
-
-        public static string TemplateFilename_EN
-        {
-            get
-            {
-                return GetStringValue("TemplateFilename_EN", "template_en.dotx");
-            }
-        }
-
-        public static string ManualsDirectory
-        {
-            get
-            {
-                return GetStringValue("ManualsDirectory", "Handbuecher");
-            }
-        }
-
-        public static string TemplatesDirectory
-        {
-            get
-            {
-                return GetStringValue("TemplatesDirectory", "Vorlagen");
-            }
-        }
-        
+                
         public static IEnumerable<string> EnumerateDocuments()
         {
-            string[] folders = GetStringValue("FilesDirectory", "Dateien").Split(';');
-            string baseDirectory = Settings.BaseDirectory;
+            string[] folders = Program.Settings.FilesDirectory.Split(';');
+            string baseDirectory = Program.Settings.BaseDirectory;
 
             Trace.TraceInformation("EnumerateDocuments(baseDirectory: {0}, filesDirectory: {1})");
             foreach(string folderName in folders)
@@ -80,8 +39,8 @@ namespace manualisator.Core
         
         public static string GetDocumentFilename(string fileName)
         {
-            string[] folders = GetStringValue("FilesDirectory", "Dateien").Split(';');
-            string baseDirectory = Settings.BaseDirectory;
+            string[] folders = Program.Settings.FilesDirectory.Split(';');
+            string baseDirectory = Program.Settings.BaseDirectory;
 
             foreach (string folderName in folders)
             {
@@ -105,9 +64,9 @@ namespace manualisator.Core
             get
             {
                 return Path.Combine(
-                    Settings.BaseDirectory, 
-                    Settings.ManualsDirectory, 
-                    GetStringValue("LookupDocumentFilename", "lookup.docx"));
+                    Program.Settings.BaseDirectory,
+                    Program.Settings.ManualsDirectory, 
+                    Program.Settings.LookupDocumentFilename);
             }
         }
 
@@ -116,39 +75,18 @@ namespace manualisator.Core
             get
             {
                 return Path.Combine(
-                    Settings.BaseDirectory, 
-                    GetStringValue("ManualsDatabaseFilename", "manuals.db"));
+                    Program.Settings.BaseDirectory, 
+                    Program.Settings.ManualsDatabaseFilename);
             }
         }
 
         public static string GetTargetFilename(DBSchema.Manual m)
         {
             return Path.Combine(
-                Settings.BaseDirectory, 
-                Settings.ManualsDirectory, 
-                string.Format(GetStringValue("FilenameTemplate", "{0}_{1}_{2}.docx"), m.Name, m.Device, m.Language));
+                Program.Settings.BaseDirectory,
+                Program.Settings.ManualsDirectory, 
+                string.Format(Program.Settings.FilenameTemplate, m.Name, m.Device, m.Language));
         }
 
-        private static string GetStringValue(string name, string defaultValue)
-        {
-            try
-            {
-                var key = Registry.CurrentUser.OpenSubKey("Software\\p-nand-q.com\\WNIMAN", writable: false);
-                try
-                {
-                    object existing = key.GetValue(name);
-                    if (existing != null)
-                        defaultValue = existing as string;
-                }
-                finally
-                {
-                    key.Close();
-                }
-            }
-            catch(Exception)
-            {
-            }
-            return defaultValue;
-        }
     }
 }
