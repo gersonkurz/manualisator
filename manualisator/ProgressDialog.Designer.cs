@@ -62,11 +62,11 @@
             // LbText
             // 
             this.LbText.AutoSize = true;
-            this.LbText.Font = new System.Drawing.Font("Segoe UI Light", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LbText.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LbText.Location = new System.Drawing.Point(35, 134);
             this.LbText.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.LbText.Name = "LbText";
-            this.LbText.Size = new System.Drawing.Size(600, 32);
+            this.LbText.Size = new System.Drawing.Size(492, 25);
             this.LbText.TabIndex = 2;
             this.LbText.Text = "BESCHREIBUNG DES AKTUELLEN VORGANGS STEHT HIER";
             // 
