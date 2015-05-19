@@ -39,7 +39,7 @@ namespace manualisator.Core
             Trace.Assert(Database == null);
             DisplayCallback = displayCallback;
 
-            string databaseFilename = Settings.ManualsDatabasePathname;
+            string databaseFilename = Tools.ManualsDatabasePathname;
             if (File.Exists(databaseFilename))
             {
                 DisplayCallback.AddInformation(Strings.OpeningExistingDatabase, databaseFilename);
@@ -173,7 +173,7 @@ namespace manualisator.Core
 
             DateTime now = DateTime.Now;
 
-            string targetFilename = Settings.GetTargetFilename(m);
+            string targetFilename = Tools.GetTargetFilename(m);
 
             Dictionary<long, string> lookup = m.Language.Equals(Strings.Language_DE, StringComparison.OrdinalIgnoreCase) ? DE_Lookup_Names : EN_Lookup_Names;
             Dictionary<long, string> otherLookup = m.Language.Equals(Strings.Language_DE, StringComparison.OrdinalIgnoreCase) ? EN_Lookup_Names : DE_Lookup_Names;
@@ -320,7 +320,7 @@ namespace manualisator.Core
             Trace.TraceInformation("AddDocumentToDocument: {0}", templateName);
             try
             {
-                string pathname = Settings.GetDocumentFilename(templateName);
+                string pathname = Tools.GetDocumentFilename(templateName);
                 Word._Document currentTemplateDocument = Word.Documents.Open(pathname);
                 try
                 {
@@ -417,7 +417,7 @@ namespace manualisator.Core
 
             DateTime now = DateTime.Now;
 
-            string lookupDocumentFilename = Settings.LookupDocumentPathname;
+            string lookupDocumentFilename = Tools.LookupDocumentPathname;
             if( !File.Exists(lookupDocumentFilename))
             {
                 return CreateLookupDocument();
@@ -449,7 +449,7 @@ namespace manualisator.Core
 
             DateTime now = DateTime.Now;
 
-            string targetFilename = Settings.LookupDocumentPathname;
+            string targetFilename = Tools.LookupDocumentPathname;
             if (Word == null)
             {
                 DisplayCallback.AddInformation(Strings.NeedToCreateNewInstanceOfWord);
@@ -518,7 +518,7 @@ namespace manualisator.Core
             }
             try
             {
-                string pathname = Settings.GetDocumentFilename(t.Name);
+                string pathname = Tools.GetDocumentFilename(t.Name);
                 Word._Document currentTemplateDocument = Word.Documents.Open(pathname);
                 try
                 {

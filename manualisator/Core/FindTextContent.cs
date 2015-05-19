@@ -47,7 +47,7 @@ namespace manualisator.Core
 
             int nLinesOfSkippedText = 0;
 
-            foreach (string filename in Settings.EnumerateDocuments())
+            foreach (string filename in Tools.EnumerateDocuments())
             {
                 if (IsCancelFlagSet())
                 {

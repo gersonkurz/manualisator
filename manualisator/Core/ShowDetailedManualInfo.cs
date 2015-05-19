@@ -33,7 +33,7 @@ namespace manualisator.Core
             Trace.Assert(Database == null);
             DisplayCallback = displayCallback;
 
-            string databaseFilename = Settings.ManualsDatabasePathname;
+            string databaseFilename = Tools.ManualsDatabasePathname;
             if (File.Exists(databaseFilename))
             {
                 DisplayCallback.AddInformation(Strings.OpeningExistingDatabase, databaseFilename);

@@ -103,7 +103,10 @@ namespace manualisator
         private string SkipSpecialChars(string msg)
         {
             if (msg.StartsWith("^") || msg.StartsWith("§"))
-                return msg.Substring(1);
+                msg = msg.Substring(1);
+
+            if (msg.StartsWith("- "))
+                msg = msg.Substring(2);
             return msg;
         }
 
@@ -142,7 +145,7 @@ namespace manualisator
             }
             if(isRunning)
             {
-                LbElapsed.Text = string.Format("Dauer: {0}", DateTime.Now - Start);
+                LbElapsed.Text = string.Format("Dauer: {0:hh\\:mm\\:ss}", DateTime.Now - Start);
             }
         }
 

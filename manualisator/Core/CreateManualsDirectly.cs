@@ -20,8 +20,6 @@ namespace manualisator.Core
         private Excel._Application Excel;
         private readonly Dictionary<string, string> TemplateLookup = new Dictionary<string, string>();
 
-        
-
         public CreateManualsDirectly(List<string> excelSheetsToGenerate)
         {
             ExcelSheetsToGenerate = excelSheetsToGenerate;
@@ -41,7 +39,7 @@ namespace manualisator.Core
 
         private void ReadTemplateLookup()
         {
-            foreach (string filename in Settings.EnumerateDocuments())
+            foreach (string filename in Tools.EnumerateDocuments())
             {
                 TemplateLookup[Tools.KeyFromFilename(Path.GetFileName(filename))] = filename;
             }
@@ -138,7 +136,7 @@ namespace manualisator.Core
 
             DateTime now = DateTime.Now;
 
-            string targetFilename = Settings.GetTargetFilename(m);
+            string targetFilename = Tools.GetTargetFilename(m);
 
             if (Word == null)
             {
@@ -175,12 +173,12 @@ namespace manualisator.Core
                             continue;
                         }
                         double percentage = index / ((filenames.Count / 100.0));
-                        DisplayCallback.AddInformation("^- {0}/{1} = {2:##.##}%: '{3}'", index++, filenames.Count, percentage, TemplateLookup[key]);
+                        DisplayCallback.AddInformation("^{0}/{1} = {2:##.##}%: '{3}'", index++, filenames.Count, percentage, TemplateLookup[key]);
                         if (Tools.IsSpecialTemplate(filename))
                         {
                             AddDocumentToDocument(newDocument, TemplateLookup[key], pageBreak: true, manual: m);
                         }
-                        else if(Settings.UseLanguageSpecificBookmarks) 
+                        else if(Program.Settings.UseLanguageSpecificBookmarks) 
                         {
                             AddBookmarksFromExistingDocument(newDocument, TemplateLookup[key], m.Language);
                         }
@@ -376,7 +374,7 @@ namespace manualisator.Core
             Trace.TraceInformation("AddDocumentToDocument: {0}", templateName);
             try
             {
-                string pathname = Settings.GetDocumentFilename(templateName);
+                string pathname = Tools.GetDocumentFilename(templateName);
                 Word._Document currentTemplateDocument = Word.Documents.Open(pathname);
                 try
                 {

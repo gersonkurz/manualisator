@@ -121,10 +121,10 @@ namespace manualisator.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("true")]
-        public string UseLanguageSpecificBookmarks {
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UseLanguageSpecificBookmarks {
             get {
-                return ((string)(this["UseLanguageSpecificBookmarks"]));
+                return ((bool)(this["UseLanguageSpecificBookmarks"]));
             }
             set {
                 this["UseLanguageSpecificBookmarks"] = value;
@@ -140,6 +140,18 @@ namespace manualisator.Properties {
             }
             set {
                 this["BaseDirectory"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseFilenameTemplate {
+            get {
+                return ((bool)(this["UseFilenameTemplate"]));
+            }
+            set {
+                this["UseFilenameTemplate"] = value;
             }
         }
     }

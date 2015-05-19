@@ -61,7 +61,6 @@
     <Compile Include="Core\PartialManualContents.cs" />
     <Compile Include="Core\RebuildLookupDocument.cs" />
     <Compile Include="Core\RegTools.cs" />
-    <Compile Include="Core\Settings.cs" />
     <Compile Include="Core\ShowDetailedManualInfo.cs" />
     <Compile Include="Core\Strings.cs" />
     <Compile Include="Core\TemplateInfo.cs" />

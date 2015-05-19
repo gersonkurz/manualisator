@@ -72,12 +72,21 @@ namespace manualisator
 
             protected void SetValue(object settings, PropertyInfo pi, object value)
             {
+                if((value != null) && (value.GetType() == typeof(int)))
+                {
+                    value = ((int)value) != 0;
+                }
                 pi.SetValue(settings, value, null);
             }
 
             protected object GetValue(object settings, PropertyInfo pi)
             {
-                return pi.GetValue(settings, null);
+                object result = pi.GetValue(settings, null);
+                if (result.GetType() == typeof(bool))
+                {
+                    return ((bool)result) ? 1 : 0;
+                }
+                return result;
             }
 
         }
@@ -100,8 +109,9 @@ namespace manualisator
                         SetValue(settings, pi, existing);
                     }
                 }
-                catch(Exception)
+                catch(Exception e)
                 {
+                    manualisator.Core.Tools.DumpException(e, "LoadSettingsFromRegistry caught an exception");
                 }
             }
         }

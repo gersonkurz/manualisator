@@ -28,7 +28,7 @@ namespace manualisator.Core
 
         public TemplatesUpdater()
         {
-            DatabaseFilename = Settings.ManualsDatabasePathname;
+            DatabaseFilename = Tools.ManualsDatabasePathname;
         }
 
         public override bool Initialize(IDisplayCallback displayCallback)
@@ -147,7 +147,7 @@ namespace manualisator.Core
 
             List<string> filesToRemove = new List<string>();
             int nFilesConverted = 0;
-            foreach (string filename in Settings.EnumerateDocuments())
+            foreach (string filename in Tools.EnumerateDocuments())
             {
                 if (filename.ToLower().EndsWith(".doc") && !
                     filename.StartsWith("~")) // skip hidden files
@@ -240,7 +240,7 @@ namespace manualisator.Core
             ReadExistingTemplates();
             int nTemplatesInserted = 0;
             CurrentLinesInserted = 0;
-            foreach (string filename in Settings.EnumerateDocuments())
+            foreach (string filename in Tools.EnumerateDocuments())
             {
                 string filename_only = Path.GetFileName(filename);
                 string key = filename_only.ToLower();

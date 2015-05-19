@@ -31,7 +31,7 @@ namespace manualisator.Core
             Trace.Assert(Database == null);
             DisplayCallback = displayCallback;
 
-            string databaseFilename = Settings.ManualsDatabasePathname;
+            string databaseFilename = Tools.ManualsDatabasePathname;
             if (File.Exists(databaseFilename))
             {
                 DisplayCallback.AddInformation(Strings.OpeningExistingDatabase, databaseFilename);
@@ -95,7 +95,7 @@ namespace manualisator.Core
 
             DateTime now = DateTime.Now;
 
-            string targetFilename = Settings.LookupDocumentPathname;
+            string targetFilename = Tools.LookupDocumentPathname;
             if (File.Exists(targetFilename))
             {
                 try
@@ -190,7 +190,7 @@ namespace manualisator.Core
 
             try
             {
-                string pathname = Settings.GetDocumentFilename(t.Name);
+                string pathname = Tools.GetDocumentFilename(t.Name);
                 Word._Document currentTemplateDocument = Word.Documents.Open(pathname);
                 try
                 {
