@@ -154,11 +154,11 @@ namespace manualisator.Core
             bool failed = false;
             try
             {
-                string template = Settings.TemplateFilename_DE;
+                string template = Program.Settings.TemplateFilename_DE;
                 if (m.Language.Equals(Strings.Language_EN))
-                    template = Settings.TemplateFilename_EN;
+                    template = Program.Settings.TemplateFilename_EN;
 
-                object templatePath = Path.Combine(Settings.BaseDirectory, Settings.TemplatesDirectory, template);
+                object templatePath = Path.Combine(Program.Settings.BaseDirectory, Program.Settings.TemplatesDirectory, template);
                 Word._Document newDocument = Word.Documents.Add(ref templatePath);
                 try
                 {

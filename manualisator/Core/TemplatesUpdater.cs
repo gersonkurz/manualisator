@@ -294,7 +294,7 @@ namespace manualisator.Core
 
             if (!UseOnlyOneManual)
             {
-                foreach (string filename in Directory.GetFiles(Settings.BaseDirectory))
+                foreach (string filename in Directory.GetFiles(Program.Settings.BaseDirectory))
                 {
                     if (filename.ToLower().EndsWith(".xls") || filename.ToLower().EndsWith(".xlsx"))
                     {
@@ -322,7 +322,7 @@ namespace manualisator.Core
                 }
             }
 
-            foreach (string base_directory in Directory.GetDirectories(Settings.BaseDirectory))
+            foreach (string base_directory in Directory.GetDirectories(Program.Settings.BaseDirectory))
             {
                 if (Path.GetFileName(base_directory).ToUpper().StartsWith("C") ||
                     Path.GetFileName(base_directory).ToUpper().StartsWith("T"))
