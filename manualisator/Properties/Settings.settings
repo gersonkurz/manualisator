@@ -1,0 +1,36 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="manualisator.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="TemplateFilename_DE" Type="System.String" Scope="User">
+      <Value Profile="(Default)">template_de.dotx</Value>
+    </Setting>
+    <Setting Name="TemplateFilename_EN" Type="System.String" Scope="User">
+      <Value Profile="(Default)">template_en.dotx</Value>
+    </Setting>
+    <Setting Name="ManualsDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Handbuecher</Value>
+    </Setting>
+    <Setting Name="TemplatesDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Vorlagen</Value>
+    </Setting>
+    <Setting Name="FilesDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Dateien</Value>
+    </Setting>
+    <Setting Name="LookupDocumentFilename" Type="System.String" Scope="User">
+      <Value Profile="(Default)">lookup.docx</Value>
+    </Setting>
+    <Setting Name="ManualsDatabaseFilename" Type="System.String" Scope="User">
+      <Value Profile="(Default)">manuals.db</Value>
+    </Setting>
+    <Setting Name="FilenameTemplate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Product_Description_{1}_{2}.docx</Value>
+    </Setting>
+    <Setting Name="UseLanguageSpecificBookmarks" Type="System.String" Scope="User">
+      <Value Profile="(Default)">true</Value>
+    </Setting>
+    <Setting Name="BaseDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Projects\2015\manualisator\_DEF_FILES</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
