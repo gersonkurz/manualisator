@@ -211,11 +211,14 @@ namespace manualisator.Core
                 {
                     foreach (string filename in pmc.Filenames)
                     {
-                        string key = Tools.KeyFromFilename(filename);
-                        if (FilenameToBookmarks[key].Count == 0)
+                        if (!Tools.IsSpecialTemplate(filename))
                         {
-                            DisplayCallback.AddError(Strings.ErrorFileHasNoReferencedBookmarks, TemplateLookup[key]);
-                            failed = true;
+                            string key = Tools.KeyFromFilename(filename);
+                            if (FilenameToBookmarks[key].Count == 0)
+                            {
+                                DisplayCallback.AddError(Strings.ErrorFileHasNoReferencedBookmarks, TemplateLookup[key]);
+                                failed = true;
+                            }
                         }
                     }
                 }
@@ -378,20 +381,41 @@ namespace manualisator.Core
             bool failed = false;
             foreach (string filename in pmc.Filenames)
             {
-                foreach(string bookmarkName in FilenameToBookmarks[Tools.KeyFromFilename(filename)])
+                if(failed)
+                    break;
+
+                string pathname = TemplateLookup[Tools.KeyFromFilename(filename)];
+                double percentage = index / ((pmc.Filenames.Count / 100.0));
+                
+
+                if (Tools.IsSpecialTemplate(filename))
                 {
-                    if (IsCancelFlagSet())
+                    DisplayCallback.AddInformation("^{0}/{1} = {2:##.##}%: '{3}' komplett", index, pmc.Filenames.Count, percentage, pathname);
+                    if ( !AddDocumentToDocument(doc, pathname, pageBreak: true, manual: m) )
                     {
                         failed = true;
                         break;
                     }
-
-                    string bookmarkKey = bookmarkName.ToLower();
-                    double percentage = index / ((pmc.Filenames.Count / 100.0));
-                    DisplayCallback.AddInformation("^{0}/{1} = {2:##.##}%: '{3}' für das Lesezeichen {4}", index++, pmc.Filenames.Count, percentage, filename, bookmarkName);
-
-                    AddThisBookmarkToDocument(doc, filename, bookmarkName);
                 }
+                else
+                {
+                    foreach(string bookmarkName in FilenameToBookmarks[Tools.KeyFromFilename(filename)])
+                    {
+                        DisplayCallback.AddInformation("^{0}/{1} = {2:##.##}%: '{3}' für das Lesezeichen {4}", index, pmc.Filenames.Count, percentage, pathname, bookmarkName);
+                        if (IsCancelFlagSet())
+                        {
+                            failed = true;
+                            break;
+                        }
+                        string bookmarkKey = bookmarkName.ToLower();
+                        if( !AddThisBookmarkToDocument(doc, pathname, bookmarkName) )
+                        {
+                            failed = true;
+                            break;
+                        }
+                    }
+                }
+                ++index;
             }
             return !failed;
         }
@@ -408,18 +432,25 @@ namespace manualisator.Core
             bool failed = false;
             foreach (string bookmarkName in pmc.Bookmarks)
             {
-                if (IsCancelFlagSet())
-                {
-                    failed = true;
-                    break;
-                }
-
                 string bookmarkKey = bookmarkName.ToLower();
                 foreach (string filename in BookmarkToFilenames[bookmarkKey])
                 {
+                    if (IsCancelFlagSet())
+                    {
+                        failed = true;
+                        break;
+                    }
+
                     double percentage = index / ((totalFiles / 100.0));
                     DisplayCallback.AddInformation("^{0}/{1} = {2:##.##}%: '{3}' für das Lesezeichen {4}", index++, totalFiles, percentage, filename, bookmarkName);
-                    AddThisBookmarkToDocument(doc, filename, bookmarkName);
+                    if (Tools.IsSpecialTemplate(filename))
+                    {
+                        AddDocumentToDocument(doc, filename, pageBreak: true, manual: m);
+                    }
+                    else
+                    {
+                        AddThisBookmarkToDocument(doc, filename, bookmarkName);
+                    }
                 }
             }
             return !failed;

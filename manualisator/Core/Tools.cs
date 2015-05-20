@@ -14,9 +14,10 @@ namespace manualisator.Core
     {
         public static bool IsSpecialTemplate(string name)
         {
-            return name.StartsWith("TOC_", StringComparison.OrdinalIgnoreCase) ||
-                    name.StartsWith("TOF_", StringComparison.OrdinalIgnoreCase) ||
-                    name.StartsWith("UMSCH_", StringComparison.OrdinalIgnoreCase);
+            name = Path.GetFileNameWithoutExtension(name).ToUpper();
+            return name.StartsWith("TOC_") ||
+                    name.StartsWith("TOF_") ||
+                    name.StartsWith("UMSCH_");
         }
 
         public static string KeyFromFilename(string filename)
