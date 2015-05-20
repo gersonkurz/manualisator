@@ -168,17 +168,20 @@ namespace manualisator.Core
                         failed = true;
                         break;
                     }
-                    string key = Tools.KeyFromFilename(filename);
-                    if (!Program.Settings.CreateDocumentSortOrderFromBookmarks)
+                    if(Tools.IsSpecialTemplate(filename))
                     {
-                        FilenameToBookmarks[key] = new List<string>();
+                        Trace.TraceWarning("Ignoring this: {0}", filename);
+                        continue;
                     }
+
+                    string key = Tools.KeyFromFilename(filename);
                     if (!TemplateLookup.ContainsKey(key))
                     {
                         DisplayCallback.AddError(Strings.ErrorKeyNotFoundInKnownTemplates, key);
                         failed = true;
                         continue;
                     }
+                    FilenameToBookmarks[key] = new List<string>();
                     double percentage = filenameIndex / ((pmc.Filenames.Count / 100.0));
                     DisplayCallback.AddInformation("^{0}/{1} = {2:##.##}%: '{3}'", filenameIndex++, pmc.Filenames.Count, percentage, TemplateLookup[key]);
 
@@ -196,33 +199,26 @@ namespace manualisator.Core
             }
             if(!failed)
             {
-                if (Program.Settings.CreateDocumentSortOrderFromBookmarks)
+                foreach (string bookmarkName in pmc.Bookmarks)
                 {
-                    foreach (string bookmarkName in pmc.Bookmarks)
+                    if (BookmarkToFilenames[bookmarkName.ToLower()].Count == 0)
                     {
-                        if (BookmarkToFilenames[bookmarkName.ToLower()].Count == 0)
+                        DisplayCallback.AddError(Strings.ErrorBookmarkDoesNotExistAnywhere, bookmarkName);
+                        failed = true;
+                    }
+                }
+                foreach (string filename in pmc.Filenames)
+                {
+                    if (!Tools.IsSpecialTemplate(filename))
+                    {
+                        string key = Tools.KeyFromFilename(filename);
+                        if (FilenameToBookmarks[key].Count == 0)
                         {
-                            DisplayCallback.AddError(Strings.ErrorBookmarkDoesNotExistAnywhere, bookmarkName);
+                            DisplayCallback.AddError(Strings.ErrorFileHasNoReferencedBookmarks, TemplateLookup[key]);
                             failed = true;
                         }
                     }
                 }
-                else
-                {
-                    foreach (string filename in pmc.Filenames)
-                    {
-                        if (!Tools.IsSpecialTemplate(filename))
-                        {
-                            string key = Tools.KeyFromFilename(filename);
-                            if (FilenameToBookmarks[key].Count == 0)
-                            {
-                                DisplayCallback.AddError(Strings.ErrorFileHasNoReferencedBookmarks, TemplateLookup[key]);
-                                failed = true;
-                            }
-                        }
-                    }
-                }
-
             }
 
             if (failed)
@@ -257,14 +253,8 @@ namespace manualisator.Core
                         if (BookmarkToFilenames.ContainsKey(bookmarkKey))
                         {
                             Trace.TraceInformation("- Lesezeichen '{0}' gefunden in '{1}'", context, filename);
-                            if (Program.Settings.CreateDocumentSortOrderFromBookmarks)
-                            {
-                                BookmarkToFilenames[bookmarkKey].Add(filename);
-                            }
-                            else
-                            {
-                                FilenameToBookmarks[filenameKey].Add(bm.Name);
-                            }
+                            BookmarkToFilenames[bookmarkKey].Add(filename);
+                            FilenameToBookmarks[filenameKey].Add(bm.Name);
                         }
                         else
                         {
@@ -500,12 +490,41 @@ namespace manualisator.Core
                     content.Activate();
 
                     Word.Bookmark bm = content.Bookmarks[bookmarkName];
+                    // ok, this bookmark needs to be copied
+                    Word.Range completeRange = bm.Range;
+                    for (int j = 1, jmax = completeRange.Paragraphs.Count; j <= jmax; ++j)
+                    {
+                        if (IsCancelFlagSet())
+                        {
+                            failed = true;
+                            break;
+                        }
+                        string name = completeRange.Paragraphs[j].get_Style().NameLocal;
+                        if (name.StartsWith("Überschrift 1;"))
+                        {
+                            object start2 = doc.Content.End - 1;
+                            object end2 = doc.Content.End;
+                            Word.Range rng2 = doc.Range(ref start2, ref end2);
+                            rng2.InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
+                            break;
+                        }
+                    }
                     bm.Range.Copy();
                     object start = doc.Content.End - 1;
                     object end = doc.Content.End;
                     Word.Range rng = doc.Range(ref start, ref end);
                     rng.Select();
                     rng.Paste();
+                    /*
+
+
+
+                    bm.Range.Copy();
+                    object start = doc.Content.End - 1;
+                    object end = doc.Content.End;
+                    Word.Range rng = doc.Range(ref start, ref end);
+                    rng.Select();
+                    rng.Paste();*/
                 }
                 finally
                 {
