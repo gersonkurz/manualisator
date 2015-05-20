@@ -17,8 +17,6 @@ namespace manualisator
         public FindTextForm()
         {
             InitializeComponent();
-            tbFindText.Text = "NF-DP01";
-
         }
 
         private void btOK_Click(object sender, EventArgs e)

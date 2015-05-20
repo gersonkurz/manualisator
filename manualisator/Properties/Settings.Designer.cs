@@ -109,7 +109,7 @@ namespace manualisator.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Product_Description_{1}_{2}.docx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Product_Description_%NAME%_%DEVICE%.docx")]
         public string FilenameTemplate {
             get {
                 return ((string)(this["FilenameTemplate"]));
@@ -164,6 +164,18 @@ namespace manualisator.Properties {
             }
             set {
                 this["CreateDocumentSortOrderFromBookmarks"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool InsertPageBreakBeforeHeading1 {
+            get {
+                return ((bool)(this["InsertPageBreakBeforeHeading1"]));
+            }
+            set {
+                this["InsertPageBreakBeforeHeading1"] = value;
             }
         }
     }

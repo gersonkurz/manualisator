@@ -25,8 +25,11 @@ namespace manualisator
             DeleteOldTracefiles();
 
             Assembly myAssembly = Assembly.GetExecutingAssembly();
+
+            var v = myAssembly.GetName().Version;
+            string version = string.Format("{0}.{1}.{2}", v.Major, v.Minor, v.Revision);
             
-            AddInformation("§Willkommen bei MANUALISATOR Version {0}", myAssembly.GetName().Version.ToString());
+            AddInformation("§Willkommen bei MANUALISATOR Version {0}", version);
             AddInformation("Copyright (C) 2015 Gerson Kurz. All Rights Reserved.");
             AddInformation("");
 
@@ -35,7 +38,7 @@ namespace manualisator
                 AddInformation(string.Format("Das Basis-Verzeichnis ist '{0}'.", Program.Settings.BaseDirectory));
             }
 
-            this.Text = string.Format("manualisator {0}", myAssembly.GetName().Version.ToString());
+            this.Text = string.Format("manualisator {0}", version);
             UpdateMenuAvailability();
         }
 

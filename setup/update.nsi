@@ -3,7 +3,7 @@ SetCompressor /SOLID lzma
 
 Name "MANUALISATOR"
 
-OutFile "MANUALISATOR-SETUP-1.0.0.4.EXE"
+OutFile "MANUALISATOR-SETUP-1.0.4.EXE"
 
 InstallDir "$PROGRAMFILES\MANUALISATOR"
 InstallDirRegKey HKLM "SOFTWARE\p-nand-q.com\manualisator" "Install_Dir"
@@ -47,6 +47,7 @@ Section "MANUALISATOR (required)"
 
     ; Put file there
     File /R "..\MANUALISATOR\bin\Release\*"
+    File /R "..\readme.html"
 
     ; Write the installation path into the registry
     WriteRegStr HKLM "Software\p-nand-q.com\MANUALISATOR" "Install_Dir" "$INSTDIR"

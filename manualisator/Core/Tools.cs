@@ -134,14 +134,33 @@ namespace manualisator.Core
             }
         }
 
+        private static string ReplaceTemplateString(string template, Dictionary<string, string> variables)
+        {
+            foreach(string key in variables.Keys)
+            {
+                string value = variables[key];
+                template = template.Replace(key, value);
+            }
+            return template;
+        }
+
         public static string GetTargetFilename(DBSchema.Manual m)
         {
             if(Program.Settings.UseFilenameTemplate)
             {
+                Dictionary<string, string> template = new Dictionary<string, string>();
+                template["%NAME%"] = m.Name;
+                template["%DEVICE%"] = m.Device;
+                template["%LANGUAGE%"] = m.Language;
+                template["%TITEL1%"] = m.Title1;
+                template["%TITEL2%"] = m.Title2;
+                template["%TITEL3%"] = m.Title3;
+
+                
                 return Path.Combine(
                     Program.Settings.BaseDirectory,
                     Program.Settings.ManualsDirectory,
-                    string.Format(Program.Settings.FilenameTemplate, m.Name, m.Device, m.Language));
+                    ReplaceTemplateString(Program.Settings.FilenameTemplate, template));
             }
             string targetFilename = m.TargetFilename;
             if(targetFilename.EndsWith(".doc", StringComparison.OrdinalIgnoreCase))
@@ -158,6 +177,41 @@ namespace manualisator.Core
                 Program.Settings.ManualsDirectory,
                 targetFilename);
                 
+        }
+
+        internal static string GetTargetFilename(PartialManualContent pmc)
+        {
+            if (Program.Settings.UseFilenameTemplate)
+            {
+                Dictionary<string, string> template = new Dictionary<string, string>();
+                template["%NAME%"] = "Handbuch";
+                template["%DEVICE%"] = pmc.Title1;
+                template["%LANGUAGE%"] = pmc.Language;
+                template["%TITEL1%"] = pmc.Title1;
+                template["%TITEL2%"] = pmc.Title2;
+                template["%TITEL3%"] = pmc.Title3;
+
+
+                return Path.Combine(
+                    Program.Settings.BaseDirectory,
+                    Program.Settings.ManualsDirectory,
+                    ReplaceTemplateString(Program.Settings.FilenameTemplate, template));
+            }
+            string targetFilename = pmc.TargetFilename;
+            if (targetFilename.EndsWith(".doc", StringComparison.OrdinalIgnoreCase))
+            {
+                targetFilename += "x";
+            }
+            else if (!targetFilename.EndsWith(".docx", StringComparison.OrdinalIgnoreCase))
+            {
+                targetFilename += ".docx";
+            }
+
+            return Path.Combine(
+                Program.Settings.BaseDirectory,
+                Program.Settings.ManualsDirectory,
+                targetFilename);
+
         }
     }
 }

@@ -48,12 +48,13 @@
             this.button1 = new System.Windows.Forms.Button();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.cbInsertPageBreakBeforeHeading1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btOK
             // 
             this.btOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btOK.Location = new System.Drawing.Point(575, 522);
+            this.btOK.Location = new System.Drawing.Point(575, 659);
             this.btOK.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.btOK.Name = "btOK";
             this.btOK.Size = new System.Drawing.Size(161, 45);
@@ -66,7 +67,7 @@
             // 
             this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btCancel.Location = new System.Drawing.Point(746, 522);
+            this.btCancel.Location = new System.Drawing.Point(746, 659);
             this.btCancel.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(161, 45);
@@ -134,7 +135,7 @@
             this.lbWarning.AutoSize = true;
             this.lbWarning.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbWarning.ForeColor = System.Drawing.Color.Red;
-            this.lbWarning.Location = new System.Drawing.Point(26, 464);
+            this.lbWarning.Location = new System.Drawing.Point(26, 601);
             this.lbWarning.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lbWarning.Name = "lbWarning";
             this.lbWarning.Size = new System.Drawing.Size(279, 25);
@@ -209,9 +210,9 @@
             this.checkBox1.Location = new System.Drawing.Point(265, 355);
             this.checkBox1.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(330, 29);
+            this.checkBox1.Size = new System.Drawing.Size(613, 29);
             this.checkBox1.TabIndex = 24;
-            this.checkBox1.Text = "Zeile \"Textmarken\" berücksichtigen";
+            this.checkBox1.Text = "Zeile \"Textmarken\" berücksichtigen (= nicht automatisch bestimmen)";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // button1
@@ -229,9 +230,9 @@
             this.checkBox2.AutoSize = true;
             this.checkBox2.Location = new System.Drawing.Point(265, 274);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(297, 29);
+            this.checkBox2.Size = new System.Drawing.Size(594, 29);
             this.checkBox2.TabIndex = 26;
-            this.checkBox2.Text = "Dateinamenvorlage verwenden";
+            this.checkBox2.Text = "Generierter Dateiname (= Dateiname nicht aus Excel übernehmen)";
             this.checkBox2.UseVisualStyleBackColor = true;
             this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
@@ -241,10 +242,21 @@
             this.checkBox3.Location = new System.Drawing.Point(265, 396);
             this.checkBox3.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(304, 29);
+            this.checkBox3.Size = new System.Drawing.Size(511, 29);
             this.checkBox3.TabIndex = 27;
-            this.checkBox3.Text = "Sortierreihenfolge \"Textmarken\"";
+            this.checkBox3.Text = "Dokumente in der Reihenfolge der Textmarken erzeugen";
             this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // cbInsertPageBreakBeforeHeading1
+            // 
+            this.cbInsertPageBreakBeforeHeading1.AutoSize = true;
+            this.cbInsertPageBreakBeforeHeading1.Location = new System.Drawing.Point(265, 437);
+            this.cbInsertPageBreakBeforeHeading1.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.cbInsertPageBreakBeforeHeading1.Name = "cbInsertPageBreakBeforeHeading1";
+            this.cbInsertPageBreakBeforeHeading1.Size = new System.Drawing.Size(448, 29);
+            this.cbInsertPageBreakBeforeHeading1.TabIndex = 28;
+            this.cbInsertPageBreakBeforeHeading1.Text = "Automatischer Seitenumbruch vor \"Überschrift 1\"";
+            this.cbInsertPageBreakBeforeHeading1.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -252,7 +264,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btCancel;
-            this.ClientSize = new System.Drawing.Size(921, 582);
+            this.ClientSize = new System.Drawing.Size(921, 719);
+            this.Controls.Add(this.cbInsertPageBreakBeforeHeading1);
             this.Controls.Add(this.checkBox3);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.button1);
@@ -304,5 +317,6 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.CheckBox cbInsertPageBreakBeforeHeading1;
     }
 }

@@ -18,7 +18,7 @@ namespace manualisator.Core
         public static string CreatingNewDatabase = "Lege Datenbank '{0}' neu an.";
 
         public static string TotalTimeToCreateAllManuals = "Gesamte Laufzeit für alle {0} Handbücher: {1}.";
-        public static string StepCreatingManualForDeviceInLanguage = "§Schritt {0}: Erzeuge {1} für {2} in der Sprache {3}.";
+        public static string StepCreatingManualForDeviceInLanguage = "§Schritt {0}: Erzeuge Handbuch für {2} in der Sprache {3}.";
         public static string FailedAfterTime = "- Fehlgeschlagen nach {0:hh\\:mm\\:ss}.";
         public static string SucceededAfterTime = "- Erfolgreich nach {0:hh\\:mm\\:ss}.";
 

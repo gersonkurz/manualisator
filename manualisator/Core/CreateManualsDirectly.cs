@@ -35,12 +35,11 @@ namespace manualisator.Core
 
         public override void Run()
         {
-            if (Word == null)
-            {
-                DisplayCallback.AddInformation(Strings.NeedToCreateNewInstanceOfWord);
-                Word = new Word.Application();
-                Word.Visible = false;
-            }
+            // Ensure Word and Excel are running
+            Word = new Word.Application();
+            Word.Visible = false;
+            Excel = new Excel.Application();
+            Excel.Visible = false;
             ReadTemplateLookup();
             ReadExcelSheets();
         }
@@ -66,7 +65,7 @@ namespace manualisator.Core
                     return false;
 
                 DisplayCallback.AddInformation(Strings.StepReadingExcelSheets, filename);
-                if (CreateManual(filename))
+                if (CreateManualFromDocumentStructure(filename))
                 {
                     ++nExcelSheetsImported;
                 }
@@ -91,59 +90,34 @@ namespace manualisator.Core
             return true;
         }
 
-        private bool CreateManual(string excelsheet_filename)
-        {
-            if (!ImportManualFromExcelSheet(excelsheet_filename))
-                return false;
-
-            return true;
-        }
-
-        private bool ImportManualFromExcelSheet(string excelsheet_filename)
+        private bool CreateManualFromDocumentStructure(string excelSheetFilename)
         {          
             try
             {
-                string language;
-                PartialManualContent pmc = ReadPartialManualContent(excelsheet_filename, out language);
+                PartialManualContent pmc = ReadDocumentStructure(excelSheetFilename);
                 if (pmc == null)
                 {
-                    DisplayCallback.AddError(Strings.ErrorUnableToReadFile, excelsheet_filename);
+                    DisplayCallback.AddError(Strings.ErrorUnableToReadFile, excelSheetFilename);
                     return false;
                 }
 
                 DisplayCallback.AddInformation(Strings.ManualHasSoManyParts, pmc.Filenames.Count);
-
-                Manual m = new Manual();
-                m.Device = pmc.Title1;
-                m.Name = "Manual";
-                m.Language = language;
-                m.LastUpdated = DateTime.Now;
-                m.LastGenerated = new DateTime(2015, 1, 1);
-                m.Title1 = pmc.Title1;
-                m.Title2 = pmc.Title2;
-                m.Title3 = pmc.Title3;
-                m.Version = pmc.Version;
-                m.TypeOfManual = pmc.TypeOfManual;
-                m.Template = pmc.Template;
-                m.TargetFilename = pmc.TargetFilename;
-                Trace.TraceInformation("m.TargetFilename: {0}", m.TargetFilename);
-
                 if (Program.Settings.UseBookmarksFromExcelSheet)
                 {
-                    if (!CreateBookmarksLookup(m, pmc))
+                    if (!CreateBookmarksLookup(pmc))
                         return false;
                 }
 
-                return CreateManual(m, pmc);
+                return CreateManual(pmc);
             }
             catch (Exception e)
             {
-                DumpException(e, Strings.ExceptionWhileImportingManual, excelsheet_filename);
+                DumpException(e, Strings.ExceptionWhileImportingManual, excelSheetFilename);
                 return false;
             }
         }
         
-        private bool CreateBookmarksLookup(Manual m, PartialManualContent pmc)
+        private bool CreateBookmarksLookup(PartialManualContent pmc)
         {
             DisplayCallback.AddInformation(Strings.StepLookingUpBookmarksInDocuments, CurrentStep++,
                 pmc.Bookmarks.Count,
@@ -194,7 +168,7 @@ namespace manualisator.Core
             }
             catch (Exception e)
             {
-                DumpException(e, Strings.ErrorExceptionWhileCreatingDocument, m.Name);
+                DumpException(e, Strings.ErrorExceptionWhileCreatingDocument, pmc.TargetFilename);
                 failed = true;
             }
             if(!failed)
@@ -278,22 +252,22 @@ namespace manualisator.Core
             return !failed;
         }
 
-        private bool CreateManual(Manual m, PartialManualContent pmc)
+        private bool CreateManual(PartialManualContent pmc)
         {
             DisplayCallback.AddInformation(Strings.StepCreatingManualForDeviceInLanguage, CurrentStep++,
-                m.Name,
-                m.Device,
-                m.Language);
+                "",
+                pmc.Title1,
+                pmc.Language);
 
             DateTime now = DateTime.Now;
             DisplayCallback.AddInformation("");
-            string targetFilename = Tools.GetTargetFilename(m);
+            string targetFilename = Tools.GetTargetFilename(pmc);
 
             bool failed = false;
             try
             {
                 string template = Program.Settings.TemplateFilename_DE;
-                if (m.Language.Equals(Strings.Language_EN))
+                if (pmc.Language.Equals(Strings.Language_EN))
                     template = Program.Settings.TemplateFilename_EN;
 
                 object templatePath = Path.Combine(Program.Settings.BaseDirectory, Program.Settings.TemplatesDirectory, template);
@@ -305,18 +279,18 @@ namespace manualisator.Core
                     {
                         if(Program.Settings.CreateDocumentSortOrderFromBookmarks)
                         {
-                            if (!CreateManualFromDocumentSortOrderFromBookmarks(doc, m, pmc))
+                            if (!CreateManualFromDocumentSortOrderFromBookmarks(doc, pmc))
                                 failed = true;
                         }
                         else
                         {
-                            if (!CreateManualFromDocumentSortOrderFromExcel(doc, m, pmc))
+                            if (!CreateManualFromDocumentSortOrderFromExcel(doc, pmc))
                                 failed = true;
                         }
                     }
                     else
                     {
-                        if (!CreateManualFromLanguageSpecificBookmarks(doc, m, pmc))
+                        if (!CreateManualUsingAutomaticBookmarkSelection(doc, pmc))
                             failed = true;
                     }
                     if (!failed)
@@ -351,7 +325,7 @@ namespace manualisator.Core
             }
             catch (Exception e)
             {
-                DumpException(e, Strings.ErrorExceptionWhileCreatingDocument, m.Name);
+                DumpException(e, Strings.ErrorExceptionWhileCreatingDocument, targetFilename);
                 failed = true;
             }
 
@@ -364,7 +338,7 @@ namespace manualisator.Core
             return true;
         }
 
-        private bool CreateManualFromDocumentSortOrderFromExcel(Word._Document doc, Manual m, PartialManualContent pmc)
+        private bool CreateManualFromDocumentSortOrderFromExcel(Word._Document doc, PartialManualContent pmc)
         {
             int index = 1;
 
@@ -381,7 +355,7 @@ namespace manualisator.Core
                 if (Tools.IsSpecialTemplate(filename))
                 {
                     DisplayCallback.AddInformation("^{0}/{1} = {2:##.##}%: '{3}' komplett", index, pmc.Filenames.Count, percentage, pathname);
-                    if ( !AddDocumentToDocument(doc, pathname, pageBreak: true, manual: m) )
+                    if ( !InsertDocument(doc, pathname, pmc) )
                     {
                         failed = true;
                         break;
@@ -398,7 +372,7 @@ namespace manualisator.Core
                             break;
                         }
                         string bookmarkKey = bookmarkName.ToLower();
-                        if( !AddThisBookmarkToDocument(doc, pathname, bookmarkName) )
+                        if( !InsertBookmarkFromDocument(doc, pathname, bookmarkName) )
                         {
                             failed = true;
                             break;
@@ -410,7 +384,7 @@ namespace manualisator.Core
             return !failed;
         }
 
-        private bool CreateManualFromDocumentSortOrderFromBookmarks(Word._Document doc, Manual m, PartialManualContent pmc)
+        private bool CreateManualFromDocumentSortOrderFromBookmarks(Word._Document doc, PartialManualContent pmc)
         {
             int index = 1;
             int totalFiles = 0;
@@ -419,185 +393,162 @@ namespace manualisator.Core
                 totalFiles += BookmarkToFilenames[bookmarkName.ToLower()].Count;
             }
 
-            bool failed = false;
+            // insert leading bookmark templates 
+            for (int i = 0, imax = pmc.Filenames.Count; i < imax; ++i )
+            {
+                string filename = pmc.Filenames[i];
+                string pathname = TemplateLookup[Tools.KeyFromFilename(filename)];
+                if (Tools.IsSpecialTemplate(filename))
+                {
+                    if (!InsertDocument(doc, pathname, pmc))
+                        return false;
+                }
+                else break;
+            }
+
+
             foreach (string bookmarkName in pmc.Bookmarks)
             {
                 string bookmarkKey = bookmarkName.ToLower();
                 foreach (string filename in BookmarkToFilenames[bookmarkKey])
                 {
                     if (IsCancelFlagSet())
-                    {
-                        failed = true;
-                        break;
-                    }
+                        return false;
 
                     double percentage = index / ((totalFiles / 100.0));
                     DisplayCallback.AddInformation("^{0}/{1} = {2:##.##}%: '{3}' für das Lesezeichen {4}", index++, totalFiles, percentage, filename, bookmarkName);
-                    if (Tools.IsSpecialTemplate(filename))
-                    {
-                        AddDocumentToDocument(doc, filename, pageBreak: true, manual: m);
-                    }
-                    else
-                    {
-                        AddThisBookmarkToDocument(doc, filename, bookmarkName);
-                    }
+                    Trace.Assert (!Tools.IsSpecialTemplate(filename));
+                    if (!InsertBookmarkFromDocument(doc, filename, bookmarkName))
+                        return false;
                 }
             }
-            return !failed;
-        }
 
-        private bool CreateManualFromLanguageSpecificBookmarks(Word._Document doc, Manual m, PartialManualContent pmc)
-        {
-            int index = 1;
-            bool failed = false;
-            foreach (string filename in pmc.Filenames)
+            // insert trailing bookmark templates 
+            for (int i = pmc.Filenames.Count-1, imin = 0; i >= imin; --i)
             {
-                if (IsCancelFlagSet())
-                {
-                    failed = true;
-                    break;
-                }
-                string key = Tools.KeyFromFilename(filename);
-                if (!TemplateLookup.ContainsKey(key))
-                {
-                    DisplayCallback.AddError(Strings.ErrorKeyNotFoundInKnownTemplates, key);
-                    failed = true;
-                    continue;
-                }
-                double percentage = index / ((pmc.Filenames.Count / 100.0));
-                DisplayCallback.AddInformation("^{0}/{1} = {2:##.##}%: '{3}'", index++, pmc.Filenames.Count, percentage, TemplateLookup[key]);
+                string filename = pmc.Filenames[i];
+                string pathname = TemplateLookup[Tools.KeyFromFilename(filename)];
                 if (Tools.IsSpecialTemplate(filename))
                 {
-                    AddDocumentToDocument(doc, TemplateLookup[key], pageBreak: true, manual: m);
+                    if (!InsertDocument(doc, pathname, pmc))
+                        return false;
                 }
-                else
-                {
-                    AddBookmarksFromExistingDocument(doc, TemplateLookup[key], m.Language);
-                }
+                else break;
             }
-            return !failed;
+            return true;
         }
 
-        private bool AddThisBookmarkToDocument(Word._Document doc, string filename, string bookmarkName)
+        /// <summary>
+        /// Copy bookmark from to target document
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="bm"></param>
+        /// <returns></returns>
+        private bool CopyBookmark(Word._Document doc, Word.Bookmark bm)
         {
-            bool failed = false;
-            string context = "";
+            if( Program.Settings.InsertPageBreakBeforeHeading1 )
+            {
+                Word.Range completeRange = bm.Range;
+
+                for (int j = 1, jmax = completeRange.Paragraphs.Count; j <= jmax; ++j)
+                {
+                    if (IsCancelFlagSet())
+                        return false;
+
+                    string name = completeRange.Paragraphs[j].get_Style().NameLocal;
+                    if (name.StartsWith("Überschrift 1;"))
+                    {
+                        object start2 = doc.Content.End - 1;
+                        object end2 = doc.Content.End;
+                        Word.Range rng2 = doc.Range(ref start2, ref end2);
+                        rng2.InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
+                        break;
+                    }
+                }
+            }
+            bm.Range.Copy();
+            object start = doc.Content.End - 1;
+            object end = doc.Content.End;
+            Word.Range rng = doc.Range(ref start, ref end);
+            rng.Select();
+            rng.Paste();
+            return true;
+        }
+
+        /// <summary>
+        /// TODO: add cache for most recently used document ? in case of more than one bookmark needs to be inserted
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="nameOfFileToInsert"></param>
+        /// <param name="bookmarkName"></param>
+        /// <returns></returns>
+        private bool InsertBookmarkFromDocument(Word._Document doc, string nameOfFileToInsert, string bookmarkName)
+        {
+            bool result = true;
             try
             {
-                Word._Document content = Word.Documents.Open(filename);
+                Word._Document fileToInsert = Word.Documents.Open(nameOfFileToInsert);
                 try
                 {
-                    content.Activate();
-
-                    Word.Bookmark bm = content.Bookmarks[bookmarkName];
-                    // ok, this bookmark needs to be copied
-                    Word.Range completeRange = bm.Range;
-                    for (int j = 1, jmax = completeRange.Paragraphs.Count; j <= jmax; ++j)
-                    {
-                        if (IsCancelFlagSet())
-                        {
-                            failed = true;
-                            break;
-                        }
-                        string name = completeRange.Paragraphs[j].get_Style().NameLocal;
-                        if (name.StartsWith("Überschrift 1;"))
-                        {
-                            object start2 = doc.Content.End - 1;
-                            object end2 = doc.Content.End;
-                            Word.Range rng2 = doc.Range(ref start2, ref end2);
-                            rng2.InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
-                            break;
-                        }
-                    }
-                    bm.Range.Copy();
-                    object start = doc.Content.End - 1;
-                    object end = doc.Content.End;
-                    Word.Range rng = doc.Range(ref start, ref end);
-                    rng.Select();
-                    rng.Paste();
-                    /*
-
-
-
-                    bm.Range.Copy();
-                    object start = doc.Content.End - 1;
-                    object end = doc.Content.End;
-                    Word.Range rng = doc.Range(ref start, ref end);
-                    rng.Select();
-                    rng.Paste();*/
+                    fileToInsert.Activate();
+                    result = CopyBookmark(doc, fileToInsert.Bookmarks[bookmarkName]);
                 }
                 finally
                 {
                     object so = Microsoft.Office.Interop.Word.WdSaveOptions.wdDoNotSaveChanges;
-                    content.Close(so);
-                    Marshal.ReleaseComObject(content);
+                    fileToInsert.Close(so);
+                    Marshal.ReleaseComObject(fileToInsert);
                 }
             }
             catch (Exception e)
             {
-                DisplayCallback.AddWarning("§Datei: '{0}' (Context: {1})", filename, context);
+                DisplayCallback.AddWarning("§Datei: '{0}'", nameOfFileToInsert);
                 DumpException(e, Strings.ErrorUnableToAddTemplateContentsToLookupDocument);
                 return false;
             }
-            return !failed;
+            return result;
         }
 
-        private bool AddBookmarksFromExistingDocument(Word._Document lookupDocument, string filename, string language)
+        /// <summary>
+        /// Insert those bookmarks choosen by automatic bookmark selection
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="nameOfFileToInsert"></param>
+        /// <param name="documentStructure"></param>
+        /// <returns></returns>
+        private bool InsertDocumentContentUsingAutomaticBookmarkSelection(Word._Document doc, string nameOfFileToInsert, PartialManualContent documentStructure)
         {
-            bool failed = false;
+            bool result = true;
             string context = "";
             try
             {
-                bool isEnglish = language.Equals(Strings.Language_EN, StringComparison.OrdinalIgnoreCase);
-                Word._Document currentTemplateDocument = Word.Documents.Open(filename);
+                bool isEnglish = documentStructure.Language.Equals(Strings.Language_EN, StringComparison.OrdinalIgnoreCase);
+                Word._Document fileToInsert = Word.Documents.Open(nameOfFileToInsert);
                 try
                 {
-                    currentTemplateDocument.Activate();                    
+                    fileToInsert.Activate();                    
 
-                    for (int i = 1, imax = currentTemplateDocument.Bookmarks.Count; i <= imax; ++i)
+                    for (int i = 1, imax = fileToInsert.Bookmarks.Count; i <= imax; ++i)
                     {
-                        if (failed || IsCancelFlagSet())
-                            break;
-                        Word.Bookmark bm = currentTemplateDocument.Bookmarks[i];
+                        if (IsCancelFlagSet())
+                            return false;
+                        Word.Bookmark bm = fileToInsert.Bookmarks[i];
                         context = bm.Name;
                         if (!bm.Name.StartsWith("TEMPLATE_"))
                         {
                             if (isEnglish && !bm.Name.EndsWith("E"))
                             {
-                                Trace.TraceWarning("Ignore bookmark '{0}' because language is '{1}'", bm.Name, language);
+                                Trace.TraceWarning("Ignore bookmark '{0}' because language is '{1}'", bm.Name, documentStructure.Language);
                                 continue;
                             }
                             else if (!isEnglish && bm.Name.EndsWith("E"))
                             {
-                                Trace.TraceWarning("Ignore bookmark '{0}' because language is '{1}'", bm.Name, language);
+                                Trace.TraceWarning("Ignore bookmark '{0}' because language is '{1}'", bm.Name, documentStructure.Language);
                                 continue;
                             }
 
                             // ok, this bookmark needs to be copied
-                            Word.Range completeRange = bm.Range;
-                            for (int j = 1, jmax = completeRange.Paragraphs.Count; j <= jmax; ++j)
-                            {
-                                if(IsCancelFlagSet())
-                                {
-                                    failed = true;
-                                    break;
-                                }
-                                string name = completeRange.Paragraphs[j].get_Style().NameLocal;
-                                if (name.StartsWith("Überschrift 1;"))
-                                {
-                                    object start2 = lookupDocument.Content.End - 1;
-                                    object end2 = lookupDocument.Content.End;
-                                    Word.Range rng2 = lookupDocument.Range(ref start2, ref end2);
-                                    rng2.InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
-                                    break;
-                                }
-                            }
-                            bm.Range.Copy();
-                            object start = lookupDocument.Content.End - 1;
-                            object end = lookupDocument.Content.End;
-                            Word.Range rng = lookupDocument.Range(ref start, ref end);
-                            rng.Select();
-                            rng.Paste();
+                            result = CopyBookmark(doc, bm);
                         }
                         else
                         {
@@ -608,31 +559,32 @@ namespace manualisator.Core
                 finally
                 {
                     object so = Microsoft.Office.Interop.Word.WdSaveOptions.wdDoNotSaveChanges;
-                    currentTemplateDocument.Close(so);
-                    Marshal.ReleaseComObject(currentTemplateDocument);
+                    fileToInsert.Close(so);
+                    Marshal.ReleaseComObject(fileToInsert);
                 }
             }
             catch (Exception e)
             {
-                DisplayCallback.AddWarning("§Datei: '{0}' (Context: {1})", filename, context);
+                DisplayCallback.AddWarning("§Datei: '{0}' (Context: {1})", nameOfFileToInsert, context);
                 DumpException(e, Strings.ErrorUnableToAddTemplateContentsToLookupDocument);
                 return false;
             }
-            return !failed;
+            return result;
         }
 
-        private PartialManualContent ReadPartialManualContent(string filename, out string expected_language)
+        /// <summary>
+        /// Read document structure from excel sheet
+        /// </summary>
+        /// <param name="excelFilename"></param>
+        /// <param name="language"></param>
+        /// <returns></returns>
+        private PartialManualContent ReadDocumentStructure(string excelFilename)
         {
-            expected_language = "";
-            DisplayCallback.AddInformation(Strings.ReadingExcelFile, filename);
-            if (Excel == null)
-            {
-                Excel = new Excel.Application();
-            }
+            DisplayCallback.AddInformation(Strings.ReadingExcelFile, excelFilename);
             PartialManualContent manual = null;
             try
             {
-                Excel.Workbook wb = Excel.Workbooks.Open(filename);
+                Excel.Workbook wb = Excel.Workbooks.Open(excelFilename);
                 try
                 {
                     Excel.Worksheet ws = (Excel.Worksheet)wb.Sheets[1];
@@ -642,93 +594,152 @@ namespace manualisator.Core
                         Microsoft.Office.Interop.Excel.XlRangeValueDataType.xlRangeValueDefault);
 
                     manual = new PartialManualContent(DisplayCallback);
-                    if (!manual.ConstructFromExcel(filename, valueArray, null, ref expected_language))
+                    string language = "";
+                    if (!manual.ConstructFromExcel(excelFilename, valueArray, null, ref language))
                     {
                         manual = null;
                     }
                 }
                 finally
                 {
-                    wb.Close(false, filename, null);
+                    wb.Close(false, excelFilename, null);
                     Marshal.ReleaseComObject(wb);
                 }
             }
             catch (Exception e)
             {
-                DumpException(e, Strings.ExceptionWhileImportingManual, filename);
+                DumpException(e, Strings.ExceptionWhileImportingManual, excelFilename);
+                manual = null;
             }
             return manual;
         }
 
-        private void ReplaceBookmark(Word._Document currentTemplateDocument, string bmName, string newContent)
+        /// <summary>
+        /// In a given document, replace all bookmarks by name
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="replacementTable"></param>
+        private void ReplaceBookmarks(Word._Document doc, Dictionary<string,string> replacementTable)
         {
-            if (!string.IsNullOrEmpty(newContent))
+            for (int i = 1; i <= doc.Bookmarks.Count; ++i)
             {
-                for (int i = 1, imax = currentTemplateDocument.Bookmarks.Count; i <= imax; ++i)
+                Word.Bookmark bm = doc.Bookmarks[i];
+                string key = bm.Name.ToLower();
+                if( replacementTable.ContainsKey(key))
                 {
-                    Word.Bookmark bm = currentTemplateDocument.Bookmarks[i];
-                    if (bm.Name.Equals(bmName))
+                    string value = replacementTable[key];
+                    if(!string.IsNullOrEmpty(value))
                     {
-                        bm.Range.Text = newContent;
-                        break;
+                        bm.Range.Text = value;
+                        --i;
                     }
                 }
             }
         }
 
-        private bool AddDocumentToDocument(Word._Document newDocument, string templateName, bool pageBreak = false, Manual manual = null)
+        /// <summary>
+        /// Add a complete document, specified by 'templateName', to the existing document, without selecting any special bookmarks.
+        /// In this copy, replace standard variables.
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="nameOfFileToInsert"></param>
+        /// <param name="documentStructure"></param>
+        /// <returns></returns>
+        private bool InsertDocument(Word._Document doc, string nameOfFileToInsert, PartialManualContent documentStructure)
         {
-            Trace.TraceInformation("AddDocumentToDocument: {0}", templateName);
+            Trace.TraceInformation("AddDocumentToDocument(nameOfFileToInsert:{0})", nameOfFileToInsert);
             try
             {
-                string pathname = Tools.GetDocumentFilename(templateName);
-                Word._Document currentTemplateDocument = Word.Documents.Open(pathname);
+                string templatePath = Tools.GetDocumentFilename(nameOfFileToInsert);
+                Trace.TraceInformation("- templatePath: {0}", templatePath);
+                Word._Document fileToInsert = Word.Documents.Open(templatePath);
                 try
                 {
-                    currentTemplateDocument.Activate();
-                    Word.Range rng;
-                    Trace.TraceInformation("- Document {0} has {1} bookmarks", pathname, currentTemplateDocument.Bookmarks.Count);
+                    fileToInsert.Activate();
 
-                    if (currentTemplateDocument.Bookmarks.Count > 0)
+                    Trace.TraceInformation("- templateDocument.Bookmarks.Count: {0}", fileToInsert.Bookmarks.Count);
+                    if (fileToInsert.Bookmarks.Count > 0)
                     {
-                        ReplaceBookmark(currentTemplateDocument, "Titel_1", manual.Title1);
-                        ReplaceBookmark(currentTemplateDocument, "Titel_2", manual.Title2);
-                        ReplaceBookmark(currentTemplateDocument, "Version", manual.Version);
+                        var replacementTable = new Dictionary<string,string>();
+                        replacementTable["titel_1"] = documentStructure.Title1;
+                        replacementTable["titel_2"] = documentStructure.Title2;
+                        replacementTable["titel_3"] = documentStructure.Title3;
+                        replacementTable["version"] = documentStructure.Version;
+                        ReplaceBookmarks(fileToInsert, replacementTable);
                     }
 
-                    object start = currentTemplateDocument.Content.Start;
-                    object end = currentTemplateDocument.Content.End;
-                    rng = currentTemplateDocument.Range(ref start, ref end);
+                    object start = fileToInsert.Content.Start;
+                    object end = fileToInsert.Content.End;
+                    Word.Range rng = fileToInsert.Range(ref start, ref end);
                     rng.Copy();
 
-                    newDocument.Activate();
-                    start = newDocument.Content.End - 1;
-                    end = newDocument.Content.End;
-                    rng = newDocument.Range(ref start, ref end);
+                    doc.Activate();
+                    start = doc.Content.End - 1;
+                    end = doc.Content.End;
+                    rng = doc.Range(ref start, ref end);
                     rng.Select();
                     rng.Paste();
 
-                    if (pageBreak)
-                    {
-                        newDocument.Words.Last.InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
-                    }
+                    doc.Words.Last.InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
                 }
                 finally
                 {
                     object so = Microsoft.Office.Interop.Word.WdSaveOptions.wdDoNotSaveChanges;
-                    currentTemplateDocument.Close(so);
-                    Marshal.ReleaseComObject(currentTemplateDocument);
+                    fileToInsert.Close(so);
+                    Marshal.ReleaseComObject(fileToInsert);
                 }
             }
             catch (Exception e)
             {
-                DumpException(e, Strings.ErrorDocumentFailedToConvert, templateName);
+                DumpException(e, Strings.ErrorDocumentFailedToConvert, nameOfFileToInsert);
                 return false;
             }
             return true;
         }
 
+        /// <summary>
+        /// Create manual using automatic bookmark selection
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="documentStructure"></param>
+        /// <returns></returns>
+        private bool CreateManualUsingAutomaticBookmarkSelection(Word._Document doc, PartialManualContent documentStructure)
+        {
+            int index = 1;
+            bool result = true;
+            foreach (string filename in documentStructure.Filenames)
+            {
+                if (IsCancelFlagSet())
+                    return false;
 
+                string key = Tools.KeyFromFilename(filename);
+                if (!TemplateLookup.ContainsKey(key))
+                {
+                    DisplayCallback.AddError(Strings.ErrorKeyNotFoundInKnownTemplates, key);
+                    result = false;
+                    continue;
+                }
+                string templatePathname = TemplateLookup[key];
+                double percentage = index / ((documentStructure.Filenames.Count / 100.0));
+
+                DisplayCallback.AddInformation("^{0}/{1} = {2:##.##}%: '{3}'", index++, documentStructure.Filenames.Count, percentage, templatePathname);
+                if (Tools.IsSpecialTemplate(filename))
+                {
+                    if (!InsertDocument(doc, templatePathname, documentStructure))
+                        return false;
+                }
+                else
+                {
+                    if (!InsertDocumentContentUsingAutomaticBookmarkSelection(doc, templatePathname, documentStructure))
+                        return false;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Cleanup this instance
+        /// </summary>
         public override void Dispose()
         {
  	        if( Word != null )
