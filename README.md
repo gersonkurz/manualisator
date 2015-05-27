@@ -1,7 +1,12 @@
-# manualisator 1.0.1
+# manualisator 1.0.5
 Handbuch
 
-TODO: Viel Gerede über den allgemeinen Zustand der Welt
+# Neu in Version 1.0.5
+
+- Es kann alternativ zum Seitenumbruch vor jeder "Überschrift 1" auch ein Abschnittswechsel eingefügt werden.
+- Das Programm warnt vor dem überschreiben bereits bestehender Dateien
+
+# Version 1.0.4
 
 ## Einstellungen
 

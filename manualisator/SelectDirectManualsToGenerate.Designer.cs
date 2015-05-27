@@ -33,6 +33,7 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lbWarning = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btCancel
@@ -72,7 +73,7 @@
             this.listView1.Location = new System.Drawing.Point(14, 19);
             this.listView1.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(1111, 663);
+            this.listView1.Size = new System.Drawing.Size(1111, 626);
             this.listView1.TabIndex = 2;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.List;
@@ -97,6 +98,16 @@
             this.lbWarning.TabIndex = 3;
             this.lbWarning.Text = "WARNUNGSTEXT STEHT HIER";
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(14, 654);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(436, 29);
+            this.checkBox1.TabIndex = 4;
+            this.checkBox1.Text = "Nicht erzeugen, nur auf Plausibilität überprüfen";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // SelectDirectManualsToGenerate
             // 
             this.AcceptButton = this.btOK;
@@ -104,6 +115,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btCancel;
             this.ClientSize = new System.Drawing.Size(1139, 753);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.lbWarning);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.btOK);
@@ -111,7 +123,7 @@
             this.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             this.Name = "SelectDirectManualsToGenerate";
-            this.Text = "Handbuch auswählen";
+            this.Text = "Handbücher auswählen";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -124,5 +136,6 @@
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.Label lbWarning;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }

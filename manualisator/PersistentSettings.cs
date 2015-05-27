@@ -72,9 +72,12 @@ namespace manualisator
 
             protected void SetValue(object settings, PropertyInfo pi, object value)
             {
-                if((value != null) && (value.GetType() == typeof(int)))
+                if(value != null) 
                 {
-                    value = ((int)value) != 0;
+                    if(pi.PropertyType == typeof(bool))
+                    {
+                        value = ((int)value) != 0;
+                    }
                 }
                 pi.SetValue(settings, value, null);
             }
@@ -82,7 +85,7 @@ namespace manualisator
             protected object GetValue(object settings, PropertyInfo pi)
             {
                 object result = pi.GetValue(settings, null);
-                if (result.GetType() == typeof(bool))
+                if (pi.PropertyType == typeof(bool))
                 {
                     return ((bool)result) ? 1 : 0;
                 }

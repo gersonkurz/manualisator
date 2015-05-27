@@ -109,18 +109,6 @@ namespace manualisator.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Product_Description_%NAME%_%DEVICE%.docx")]
-        public string FilenameTemplate {
-            get {
-                return ((string)(this["FilenameTemplate"]));
-            }
-            set {
-                this["FilenameTemplate"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool UseBookmarksFromExcelSheet {
             get {
@@ -169,13 +157,37 @@ namespace manualisator.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool InsertPageBreakBeforeHeading1 {
+        [global::System.Configuration.DefaultSettingValueAttribute("Product_Description_%DEVICE%_%LANGUAGE%.docx")]
+        public string FilenameTemplate {
             get {
-                return ((bool)(this["InsertPageBreakBeforeHeading1"]));
+                return ((string)(this["FilenameTemplate"]));
             }
             set {
-                this["InsertPageBreakBeforeHeading1"] = value;
+                this["FilenameTemplate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int InsertBeforeHeading1 {
+            get {
+                return ((int)(this["InsertBeforeHeading1"]));
+            }
+            set {
+                this["InsertBeforeHeading1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool WarnBeforeOverwriting {
+            get {
+                return ((bool)(this["WarnBeforeOverwriting"]));
+            }
+            set {
+                this["WarnBeforeOverwriting"] = value;
             }
         }
     }

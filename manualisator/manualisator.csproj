@@ -120,6 +120,12 @@
     <Compile Include="SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="WarnBeforeOverwriteForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WarnBeforeOverwriteForm.Designer.cs">
+      <DependentUpon>WarnBeforeOverwriteForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -146,6 +152,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WarnBeforeOverwriteForm.resx">
+      <DependentUpon>WarnBeforeOverwriteForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

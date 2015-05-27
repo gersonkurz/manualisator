@@ -262,6 +262,29 @@ namespace manualisator.Core
             DateTime now = DateTime.Now;
             DisplayCallback.AddInformation("");
             string targetFilename = Tools.GetTargetFilename(pmc);
+            if (Program.Settings.WarnBeforeOverwriting)
+            {
+                if (File.Exists(targetFilename))
+                {
+                    // need to display warning, ask for overwrite
+                    var box = new WarnBeforeOverwriteForm(targetFilename);
+                    var result = box.ShowDialog();
+                    if( result == System.Windows.Forms.DialogResult.OK)
+                    {
+                        // overwrite this time
+                    }
+                    else if( result == System.Windows.Forms.DialogResult.Retry )
+                    {
+                        Program.Settings["WarnBeforeOverwriting"] = false;
+                        Program.PersistentSettings.Save();
+                    }
+                    else
+                    {
+                        // something else: abort
+                        return false;
+                    }
+                }
+            }
 
             bool failed = false;
             try
@@ -446,7 +469,7 @@ namespace manualisator.Core
         /// <returns></returns>
         private bool CopyBookmark(Word._Document doc, Word.Bookmark bm)
         {
-            if( Program.Settings.InsertPageBreakBeforeHeading1 )
+            if( Program.Settings.InsertBeforeHeading1 > 0 )
             {
                 Word.Range completeRange = bm.Range;
 
@@ -461,7 +484,14 @@ namespace manualisator.Core
                         object start2 = doc.Content.End - 1;
                         object end2 = doc.Content.End;
                         Word.Range rng2 = doc.Range(ref start2, ref end2);
-                        rng2.InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
+                        if (Program.Settings.InsertBeforeHeading1 == 1 )
+                        {
+                            rng2.InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
+                        }
+                        else if(Program.Settings.InsertBeforeHeading1 == 2 )
+                        {
+                            rng2.InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdSectionBreakContinuous);
+                        }
                         break;
                     }
                 }

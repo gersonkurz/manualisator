@@ -28,7 +28,8 @@ namespace manualisator
             checkBox2.Checked = Program.Settings.UseFilenameTemplate;
             tbFilenameTemplate.Enabled = checkBox2.Checked;
             checkBox3.Checked = Program.Settings.CreateDocumentSortOrderFromBookmarks;
-            cbInsertPageBreakBeforeHeading1.Checked = Program.Settings.InsertPageBreakBeforeHeading1;
+            comboBox1.SelectedIndex = Program.Settings.InsertBeforeHeading1;
+            cbWarnBeforeOverwriting.Checked = Program.Settings.WarnBeforeOverwriting;
         }
 
         private void btOK_Click(object sender, EventArgs e)
@@ -78,7 +79,10 @@ namespace manualisator
             Program.Settings["UseBookmarksFromExcelSheet"] = checkBox1.Checked ? true : false;
             Program.Settings["UseFilenameTemplate"] = checkBox2.Checked ? true : false;
             Program.Settings["CreateDocumentSortOrderFromBookmarks"] = checkBox3.Checked ? true : false;
-            Program.Settings["InsertPageBreakBeforeHeading1"] = cbInsertPageBreakBeforeHeading1.Checked ? true : false;
+            Program.Settings["InsertBeforeHeading1"] = comboBox1.SelectedIndex;
+            Program.Settings["WarnBeforeOverwriting"] = cbWarnBeforeOverwriting.Checked ? true : false;
+
+            
             Program.PersistentSettings.Save();
             Close();
         }

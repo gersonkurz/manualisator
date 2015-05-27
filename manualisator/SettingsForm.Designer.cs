@@ -48,7 +48,9 @@
             this.button1 = new System.Windows.Forms.Button();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.cbInsertPageBreakBeforeHeading1 = new System.Windows.Forms.CheckBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.cbWarnBeforeOverwriting = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btOK
@@ -247,16 +249,38 @@
             this.checkBox3.Text = "Dokumente in der Reihenfolge der Textmarken erzeugen";
             this.checkBox3.UseVisualStyleBackColor = true;
             // 
-            // cbInsertPageBreakBeforeHeading1
+            // comboBox1
             // 
-            this.cbInsertPageBreakBeforeHeading1.AutoSize = true;
-            this.cbInsertPageBreakBeforeHeading1.Location = new System.Drawing.Point(265, 437);
-            this.cbInsertPageBreakBeforeHeading1.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            this.cbInsertPageBreakBeforeHeading1.Name = "cbInsertPageBreakBeforeHeading1";
-            this.cbInsertPageBreakBeforeHeading1.Size = new System.Drawing.Size(448, 29);
-            this.cbInsertPageBreakBeforeHeading1.TabIndex = 28;
-            this.cbInsertPageBreakBeforeHeading1.Text = "Automatischer Seitenumbruch vor \"Überschrift 1\"";
-            this.cbInsertPageBreakBeforeHeading1.UseVisualStyleBackColor = true;
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "- nichts -",
+            "Seitenumbruch",
+            "Abschnittswechsel"});
+            this.comboBox1.Location = new System.Drawing.Point(266, 440);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(628, 33);
+            this.comboBox1.TabIndex = 28;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(26, 443);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(232, 25);
+            this.label7.TabIndex = 29;
+            this.label7.Text = "Einfügen vor Überschrift 1";
+            // 
+            // cbWarnBeforeOverwriting
+            // 
+            this.cbWarnBeforeOverwriting.AutoSize = true;
+            this.cbWarnBeforeOverwriting.Location = new System.Drawing.Point(266, 492);
+            this.cbWarnBeforeOverwriting.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.cbWarnBeforeOverwriting.Name = "cbWarnBeforeOverwriting";
+            this.cbWarnBeforeOverwriting.Size = new System.Drawing.Size(513, 29);
+            this.cbWarnBeforeOverwriting.TabIndex = 30;
+            this.cbWarnBeforeOverwriting.Text = "Warnen vor dem überschreiben bestehender Dokumente";
+            this.cbWarnBeforeOverwriting.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -265,7 +289,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btCancel;
             this.ClientSize = new System.Drawing.Size(921, 719);
-            this.Controls.Add(this.cbInsertPageBreakBeforeHeading1);
+            this.Controls.Add(this.cbWarnBeforeOverwriting);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.checkBox3);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.button1);
@@ -317,6 +343,8 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox3;
-        private System.Windows.Forms.CheckBox cbInsertPageBreakBeforeHeading1;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.CheckBox cbWarnBeforeOverwriting;
     }
 }
