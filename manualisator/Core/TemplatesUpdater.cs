@@ -8,7 +8,6 @@ using manualisator.DBSchema;
 using Word = Microsoft.Office.Interop.Word;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
-using System.Diagnostics;
 
 namespace manualisator.Core
 {
@@ -390,8 +389,6 @@ namespace manualisator.Core
                     DisplayCallback.AddError(Strings.ErrorUnableToReadFile, excelsheet_filename);
                     return false;
                 }
-
-                Trace.Assert((language == Strings.Language_EN) || (language == Strings.Language_DE));
 
                 DisplayCallback.AddInformation(Strings.ManualHasSoManyParts, first.Filenames.Count);
 

@@ -30,18 +30,12 @@
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.allgemeinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.vorlagenAktualisierenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-            this.handbücherErzeugenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.einstellungenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.programmendeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hilfeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.letzteTracedateiÖffnenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.anzeigenWelcheTemplatesNICHTBenötigtWerdenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.suchenNachEinemTextInAllenVorlagenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -66,10 +60,6 @@
             // allgemeinToolStripMenuItem
             // 
             this.allgemeinToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.vorlagenAktualisierenToolStripMenuItem,
-            this.toolStripMenuItem3,
-            this.handbücherErzeugenToolStripMenuItem,
-            this.toolStripMenuItem1,
             this.toolStripMenuItem5,
             this.toolStripSeparator1,
             this.einstellungenToolStripMenuItem,
@@ -79,85 +69,45 @@
             this.allgemeinToolStripMenuItem.Size = new System.Drawing.Size(89, 24);
             this.allgemeinToolStripMenuItem.Text = "&Allgemein";
             // 
-            // vorlagenAktualisierenToolStripMenuItem
-            // 
-            this.vorlagenAktualisierenToolStripMenuItem.Name = "vorlagenAktualisierenToolStripMenuItem";
-            this.vorlagenAktualisierenToolStripMenuItem.Size = new System.Drawing.Size(343, 24);
-            this.vorlagenAktualisierenToolStripMenuItem.Text = "&1. Zuordnung der Vorlagen aktualisieren";
-            this.vorlagenAktualisierenToolStripMenuItem.Click += new System.EventHandler(this.vorlagenAktualisierenToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem3
-            // 
-            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(343, 24);
-            this.toolStripMenuItem3.Text = "&2. Optional: Textinhalte aktualisieren";
-            this.toolStripMenuItem3.Click += new System.EventHandler(this.toolStripMenuItem3_Click);
-            // 
-            // handbücherErzeugenToolStripMenuItem
-            // 
-            this.handbücherErzeugenToolStripMenuItem.Name = "handbücherErzeugenToolStripMenuItem";
-            this.handbücherErzeugenToolStripMenuItem.Size = new System.Drawing.Size(343, 24);
-            this.handbücherErzeugenToolStripMenuItem.Text = "&3. Handbücher erzeugen...";
-            this.handbücherErzeugenToolStripMenuItem.Click += new System.EventHandler(this.handbücherErzeugenToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(340, 6);
-            // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(343, 24);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(275, 24);
             this.toolStripMenuItem5.Text = "Handbücher direkt erzeugen...";
             this.toolStripMenuItem5.Click += new System.EventHandler(this.toolStripMenuItem5_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(340, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(272, 6);
             // 
             // einstellungenToolStripMenuItem
             // 
             this.einstellungenToolStripMenuItem.Name = "einstellungenToolStripMenuItem";
-            this.einstellungenToolStripMenuItem.Size = new System.Drawing.Size(343, 24);
+            this.einstellungenToolStripMenuItem.Size = new System.Drawing.Size(275, 24);
             this.einstellungenToolStripMenuItem.Text = "&Einstellungen...";
             this.einstellungenToolStripMenuItem.Click += new System.EventHandler(this.einstellungenToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(340, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(272, 6);
             // 
             // programmendeToolStripMenuItem
             // 
             this.programmendeToolStripMenuItem.Name = "programmendeToolStripMenuItem";
-            this.programmendeToolStripMenuItem.Size = new System.Drawing.Size(343, 24);
+            this.programmendeToolStripMenuItem.Size = new System.Drawing.Size(275, 24);
             this.programmendeToolStripMenuItem.Text = "&Programmende";
             this.programmendeToolStripMenuItem.Click += new System.EventHandler(this.programmendeToolStripMenuItem_Click);
             // 
             // hilfeToolStripMenuItem
             // 
             this.hilfeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.letzteTracedateiÖffnenToolStripMenuItem,
-            this.toolStripMenuItem4,
             this.anzeigenWelcheTemplatesNICHTBenötigtWerdenToolStripMenuItem,
             this.suchenNachEinemTextInAllenVorlagenToolStripMenuItem});
             this.hilfeToolStripMenuItem.Name = "hilfeToolStripMenuItem";
             this.hilfeToolStripMenuItem.Size = new System.Drawing.Size(53, 24);
             this.hilfeToolStripMenuItem.Text = "&Hilfe";
-            // 
-            // letzteTracedateiÖffnenToolStripMenuItem
-            // 
-            this.letzteTracedateiÖffnenToolStripMenuItem.Name = "letzteTracedateiÖffnenToolStripMenuItem";
-            this.letzteTracedateiÖffnenToolStripMenuItem.Size = new System.Drawing.Size(427, 24);
-            this.letzteTracedateiÖffnenToolStripMenuItem.Text = "&Letzte Tracedatei öffnen";
-            this.letzteTracedateiÖffnenToolStripMenuItem.Click += new System.EventHandler(this.letzteTracedateiÖffnenToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem4
-            // 
-            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(424, 6);
             // 
             // anzeigenWelcheTemplatesNICHTBenötigtWerdenToolStripMenuItem
             // 
@@ -228,19 +178,13 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem allgemeinToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem vorlagenAktualisierenToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem handbücherErzeugenToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem einstellungenToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem programmendeToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader Messages;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem hilfeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem letzteTracedateiÖffnenToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         private System.Windows.Forms.ToolStripMenuItem anzeigenWelcheTemplatesNICHTBenötigtWerdenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem suchenNachEinemTextInAllenVorlagenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;

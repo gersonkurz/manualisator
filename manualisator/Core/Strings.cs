@@ -68,8 +68,6 @@ namespace manualisator.Core
         public static string LanguageResetToThis = "Sprache wurde angepasst in '{0}'";
         public static string ErrorLanguageIsUnknown = "Fehler E05 in '{0}': Die Sprache '{0}' ist unbekannt.";
 
-        public static string WarningMachineDoesNotMatchExpectedMachine = "Warnung W02 in '{0}': Das Gerät ist '{1}', erwartet wurde '{2}'.";
-
         public static string ErrorTemplateNameIsInvalid = "Fehler E06 in '{0}': Es gibt keine Vorlage namens '{1}'.";
         public static string DidYouMean = "- Meinten Sie vielleicht {0}?";
         public static string ErrorTemplateSpecIsInvalid = "Fehler E07 in '{0}': Ungültige Angabe '{1}' für die Vorlage [Datentyp: {2}].";

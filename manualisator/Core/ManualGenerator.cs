@@ -8,13 +8,14 @@ using manualisator.DBSchema;
 using Word = Microsoft.Office.Interop.Word;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
-using System.Diagnostics;
-
+using System.Reflection;
+using log4net;
 namespace manualisator.Core
 {
     public class ManualGenerator : LongRunningTask
     {
-        // TODO: should be reusing the RebuildLookupDocument container instead ....
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType); 
+
         private DatabaseServices Database;
         private int CurrentStep = 1;
         private Word._Application Word;
@@ -35,8 +36,7 @@ namespace manualisator.Core
         }
 
         public bool PreInitialize(IDisplayCallback displayCallback)
-        {
-            Trace.Assert(Database == null);
+        {            
             DisplayCallback = displayCallback;
 
             string databaseFilename = Tools.ManualsDatabasePathname;
@@ -178,7 +178,6 @@ namespace manualisator.Core
             Dictionary<long, string> lookup = m.Language.Equals(Strings.Language_DE, StringComparison.OrdinalIgnoreCase) ? DE_Lookup_Names : EN_Lookup_Names;
             Dictionary<long, string> otherLookup = m.Language.Equals(Strings.Language_DE, StringComparison.OrdinalIgnoreCase) ? EN_Lookup_Names : DE_Lookup_Names;
 
-            Trace.Assert(Word != null);
             bool failed = false;
             try
             {
@@ -317,7 +316,7 @@ namespace manualisator.Core
 
         private bool AddDocumentToDocument(Word._Document newDocument, string templateName, bool pageBreak = false, Manual manual = null)
         {
-            Trace.TraceInformation("AddDocumentToDocument: {0}", templateName);
+            Log.InfoFormat("AddDocumentToDocument: {0}", templateName);
             try
             {
                 string pathname = Tools.GetDocumentFilename(templateName);
@@ -326,7 +325,7 @@ namespace manualisator.Core
                 {
                     currentTemplateDocument.Activate();
                     Word.Range rng;
-                    Trace.TraceInformation("- Document {0} has {1} bookmarks", pathname, currentTemplateDocument.Bookmarks.Count);
+                    Log.InfoFormat("- Document {0} has {1} bookmarks", pathname, currentTemplateDocument.Bookmarks.Count);
 
                     if (currentTemplateDocument.Bookmarks.Count > 0 )
                     {

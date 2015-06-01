@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Configuration;
+using log4net;
 using System.Reflection;
 using Microsoft.Win32;
-using System.Diagnostics;
 
 namespace manualisator
 {
     public class PersistentSettings
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         internal abstract class SettingsIO
         {
             protected readonly string KeyName;

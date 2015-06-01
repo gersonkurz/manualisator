@@ -8,7 +8,6 @@ using manualisator.DBSchema;
 using Word = Microsoft.Office.Interop.Word;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
-using System.Diagnostics;
 
 namespace manualisator.Core
 {

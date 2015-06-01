@@ -4,12 +4,14 @@ using System.Text;
 using System.Data;
 using System.IO;
 using System.Data.Common;
-using System.Diagnostics;
+using log4net;
+using System.Reflection;
 
 namespace manualisator.DBTools
 {
     public abstract class DBConnection : IDisposable
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType); 
         protected DbConnection Connection;
         public int RowsAffected;
 
@@ -69,12 +71,10 @@ namespace manualisator.DBTools
 
         public bool ExecuteScript(string filename)
         {
-            Trace.TraceInformation("SQL: BEGIN ExecuteScript(filename = {0})", filename);
-            Trace.Indent();
+            Log.InfoFormat("SQL: BEGIN ExecuteScript(filename = {0})", filename);
             string input = File.ReadAllText(filename, Encoding.Default);
             bool result = ExecuteNonQuery(input);
-            Trace.Unindent();
-            Trace.TraceInformation("SQL: END ExecuteScript(filename = {0})", filename);
+            Log.InfoFormat("SQL: END ExecuteScript(filename = {0})", filename);
             return result;
         }
 
@@ -88,7 +88,7 @@ namespace manualisator.DBTools
                     p.SourceColumn,
                     p.Value);
             }
-            Trace.TraceInformation(output.ToString());
+            Log.Info(output.ToString());
         }
 
         public bool ExecuteNonQuery(string statement, IEnumerable<DbParameter> parameters = null, bool quiet = false)
@@ -119,7 +119,7 @@ namespace manualisator.DBTools
             }
             if (!quiet)
             {
-                Trace.TraceInformation("SQL: nRowsAffected = {0}", RowsAffected);
+                Log.InfoFormat("SQL: nRowsAffected = {0}", RowsAffected);
             }
             return true;
         }
@@ -234,7 +234,7 @@ namespace manualisator.DBTools
 
             if (actualColumns.Count == 0)
             {
-                Trace.TraceError("ERROR, {0} has no columns, but it does exist???", schema.Name);
+                Log.ErrorFormat("ERROR, {0} has no columns, but it does exist???", schema.Name);
                 return false;
             }
 

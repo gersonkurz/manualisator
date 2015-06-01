@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data;
 using System.Data.Common;
-using System.Diagnostics;
 using System.Reflection;
 using manualisator.Attributes;
+using log4net;
 
 namespace manualisator.DBTools
 {
     public class SelectStatement : IDisposable
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         public DbDataReader DataReader;
         public readonly DBConnection Database;
         private int RowNumber;
@@ -58,7 +59,7 @@ namespace manualisator.DBTools
         {
             Database = c;
             RowNumber = 0;
-            Trace.TraceInformation("SQL: {0}", statement);
+            Log.InfoFormat("SQL: {0}", statement);
             DbCommand command = c.CreateCommand(statement);
             if (parameters != null)
             {

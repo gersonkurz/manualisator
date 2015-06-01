@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Diagnostics;
 using System.Data;
 using System.Data.Common;
+using log4net;
+using System.Reflection;
 
 namespace manualisator.DBTools
 {
     public class StatementBuilder : IDisposable
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType); 
+
         public readonly string TableName;
         private readonly string SkipTableHeader;
         public readonly ParameterList Data;
@@ -86,7 +89,7 @@ namespace manualisator.DBTools
             ParameterList JoinedList = ParameterList.Merge(Data, Parameters);
             if (JoinedList.Count == 0)
             {
-                Trace.TraceInformation("ERROR, no parameters in sql: {0}", ToString());
+                Log.ErrorFormat("ERROR, no parameters in sql: {0}", ToString());
                 return false;
             }
             return Database.ExecuteNonQuery(ToString(), JoinedList, Quiet);

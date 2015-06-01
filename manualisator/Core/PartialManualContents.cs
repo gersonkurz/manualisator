@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
+using log4net;
+using System.Reflection;
 
 namespace manualisator.Core
 {
     class PartialManualContent
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType); 
         public string OriginalTemplateFilename;
         private readonly IDisplayCallback DisplayCallback;
         private string CurrentFilename;
@@ -86,7 +88,7 @@ namespace manualisator.Core
                 if (!ReadStringValue(values, 3, i, ref bookmarkName))
                     break;
 
-                Trace.TraceInformation("bookmarkName: {0}", bookmarkName);
+                Log.InfoFormat("bookmarkName: {0}", bookmarkName);
                 Bookmarks.Add(bookmarkName);
             }
 
@@ -119,33 +121,6 @@ namespace manualisator.Core
                 return false;
             }
 
-            if (!machine.Equals(TypeOfManual))
-            {
-                string temp = string.Format("CINEO {0}", machine);
-                if (!temp.Equals(TypeOfManual))
-                {
-                    Dictionary<string, string> exceptions = new Dictionary<string,string>() {
-                        { "C6040CPT", "CINEO C6040 Compact" },
-                        { "C6040STD", "CINEO C6040 Standard" },
-                    };
-
-                    bool ignoreThis = false;
-                    if( exceptions.ContainsKey(machine) )
-                    {
-                        if(TypeOfManual.Equals(exceptions[machine]))
-                        {
-                            ignoreThis = true;
-                        }
-                    }
-
-                    if(!ignoreThis)
-                    {
-                        DisplayCallback.AddWarning(Strings.WarningMachineDoesNotMatchExpectedMachine,
-                           filename, machine, TypeOfManual);
-                    }
-                }
-            }
-
             if (!ExpectValueIs(values, 6, 1, "Inaktiv (X)") ||
                 !ExpectValueIs(values, 6, 2, "PFH"))
             {
@@ -155,7 +130,7 @@ namespace manualisator.Core
             bool failed = false;
             for (int nRow = 8, nMaxRow = values.GetLength(0); nRow <= nMaxRow; ++nRow )
             {
-                Trace.TraceInformation("reading row {0}", nRow);
+                Log.InfoFormat("reading row {0}", nRow);
                 string is_used = values[nRow, 1] as string;
                 if (string.IsNullOrEmpty(is_used))
                 {

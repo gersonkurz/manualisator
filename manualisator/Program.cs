@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using log4net;
+using System.Reflection;
 
+[assembly: log4net.Config.XmlConfigurator(Watch = true)]
 namespace manualisator
 {
     static class Program
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         internal static manualisator.Properties.Settings Settings;
         internal static PersistentSettings PersistentSettings;
 

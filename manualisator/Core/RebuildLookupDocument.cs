@@ -7,7 +7,6 @@ using System.IO;
 using manualisator.DBSchema;
 using Word = Microsoft.Office.Interop.Word;
 using System.Runtime.InteropServices;
-using System.Diagnostics;
 
 namespace manualisator.Core
 {
@@ -28,7 +27,6 @@ namespace manualisator.Core
 
         public override bool Initialize(IDisplayCallback displayCallback)
         {
-            Trace.Assert(Database == null);
             DisplayCallback = displayCallback;
 
             string databaseFilename = Tools.ManualsDatabasePathname;

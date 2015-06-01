@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using System.Reflection;
-using System.Diagnostics;
 using manualisator.Attributes;
 
 namespace manualisator.DBTools

@@ -4,18 +4,20 @@ using manualisator.DBTools;
 using manualisator.DBSchema;
 using System.Data;
 using System.Data.Common;
-using System.Diagnostics;
+using log4net;
+using System.Reflection;
 
 namespace manualisator.Core
 {
     public class DatabaseServices
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType); 
         public readonly SQLiteDatabase Database;
 
         public DatabaseServices(string filename)
         {
             string connectionString = string.Format("Data Source={0}", filename);
-            Trace.TraceInformation("connectionString: {0}", connectionString);
+            Log.InfoFormat("connectionString: {0}", connectionString);
             Database = new SQLiteDatabase(connectionString);
 
             ListOfSchemas = new TableSchema[] {

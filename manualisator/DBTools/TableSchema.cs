@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
-using System.Diagnostics;
 using manualisator.Attributes;
+using log4net;
 
 namespace manualisator.DBTools
 {
     public class TableSchema
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         public readonly string Name;
         public readonly ColumnSchema[] Columns;
         public readonly ColumnSchema PrimaryKey;
@@ -58,7 +59,6 @@ namespace manualisator.DBTools
                 ForeignKeyAttribute foreignKey = info.GetCustomAttribute<ForeignKeyAttribute>();
                 if( isPrimaryKey != null )
                 {
-                    Trace.Assert(primaryKey == null);
                     primaryKey = new ColumnSchema(fieldName, ColumnType.PrimaryKey, info.Name, isNullable);
                     columns.Add(primaryKey);
                 }
@@ -99,7 +99,7 @@ namespace manualisator.DBTools
                 }
                 else
                 {
-                    Trace.TraceWarning("Don't know type {0} for {1}, unable to create TableSchema mapping for this...",
+                    Log.WarnFormat("Don't know type {0} for {1}, unable to create TableSchema mapping for this...",
                         info.PropertyType, info.Name);
                 }
             }

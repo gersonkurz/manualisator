@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Diagnostics;
 using System.Data;
 using System.Data.Common;
+using log4net;
+using System.Reflection;
 
 namespace manualisator.DBTools
 {
     public class ParameterList : List<DbParameter>
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         public readonly DBConnection Database;
 
         public ParameterList(DBConnection database)
@@ -90,7 +92,7 @@ namespace manualisator.DBTools
             }
             else if (value != null)
             {
-                Trace.TraceInformation("ERROR in ParameterList.Add({0}, {1}): unknown type mapping", name, value);
+                Log.InfoFormat("ERROR in ParameterList.Add({0}, {1}): unknown type mapping", name, value);
                 return false;
             }
             Add(np);

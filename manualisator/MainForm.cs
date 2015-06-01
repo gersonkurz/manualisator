@@ -2,27 +2,27 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
+using log4net;
+using System.Reflection;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using System.Reflection;
+
 
 namespace manualisator
 {
     public partial class MainForm : Form, manualisator.Core.IDisplayCallback
     {
-        private bool ReportHasBeenOpened = false;
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType); 
+        
         private System.Drawing.Font BoldFont = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 
         public MainForm()
         {
             InitializeComponent();      
-            
-            DeleteOldTracefiles();
 
             Assembly myAssembly = Assembly.GetExecutingAssembly();
 
@@ -60,97 +60,7 @@ namespace manualisator
                 return Directory.Exists(Program.Settings.BaseDirectory);
             }
         }
-
-        private string TraceFilesDirectory
-        {
-            get
-            {
-                return Path.Combine(Program.Settings.BaseDirectory, "logs");
-            }
-        }
-
-        private string ReportFilename
-        {
-            get
-            {
-                DateTime now = DateTime.Now;
-                return Path.Combine(TraceFilesDirectory, 
-                    string.Format("{0:0000}.{1:00}.{2:00}-{3:00}.{4:00}.{5:00}-trace.log",
-                    now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second));
-            }
-        }
-
-        private void DeleteOldTracefiles()
-        {
-            try
-            {
-                foreach (string filename in Directory.GetFiles(TraceFilesDirectory))
-                {
-                    string[] tokens = Path.GetFileName(filename).Split('.', '-');
-                    if (tokens.Length > 3)
-                    {
-                        if (tokens[tokens.Length - 1].ToLower() == "log")
-                        {
-                            int year = int.Parse(tokens[0]);
-                            int month = int.Parse(tokens[1]);
-                            int day = int.Parse(tokens[2]);
-
-                            DateTime then = new DateTime(year, month, day);
-                            TimeSpan elapsed = DateTime.Now - then;
-                            if (elapsed.Days > 5)
-                            {
-                                File.Delete(filename);
-                            }
-
-                        }
-                    }
-                }
-            }
-            catch(Exception)
-            {
-            }
-        }
-
-        private bool FirstCallToReport = true;
-
-        private void Report(string message)
-        {
-            try
-            {
-                using (var fh = new System.IO.StreamWriter(ReportFilename, append: ReportHasBeenOpened))
-                {
-                    fh.WriteLine(message);
-                    ReportHasBeenOpened = true;
-                }
-            }
-            catch(Exception)
-            {
-                if( FirstCallToReport && IsValidBaseDirectory )
-                {
-                    FirstCallToReport = false;
-                    try
-                    {
-                        Directory.CreateDirectory(Path.GetDirectoryName(ReportFilename));
-                    }
-                    catch(Exception)
-                    {
-                        using (var fh = new System.IO.StreamWriter(ReportFilename, append: ReportHasBeenOpened))
-                        {
-                            fh.WriteLine(message);
-                            ReportHasBeenOpened = true;
-                        }
-                    }
-                }
-            }
-            
-            Trace.TraceInformation(message);
-        }
-
-        private void Report(string format, params object[] args)
-        {
-            Report(string.Format(format, args));
-        }
-
+        
         private void programmendeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
@@ -169,6 +79,7 @@ namespace manualisator
 
         public void AddText(string msg, Color foreColor)
         {
+            Log.InfoFormat(">> {0}", msg);
             foreach(string line in msg.Split('\n'))
             {
                 string textForThisLine = line;
@@ -195,8 +106,7 @@ namespace manualisator
                     lvi.Font = font;
                     listView1.Items.Add(lvi);
                 }
-                listView1.Items[listView1.Items.Count - 1].EnsureVisible();
-                Report(textForThisLine);
+                listView1.Items[listView1.Items.Count - 1].EnsureVisible();                
             }
         }
 
@@ -227,7 +137,7 @@ namespace manualisator
                     if( k > 0)
                     {
                         temp = temp.Substring(0, k);
-                        Trace.TraceWarning("About to start file '{0}'", temp);
+                        Log.WarnFormat("About to start file '{0}'", temp);
                         System.Diagnostics.Process.Start(temp);
                     }
                 }
@@ -287,7 +197,6 @@ namespace manualisator
             string oldBaseDirectory = Program.Settings.BaseDirectory;
             if( new SettingsForm().ShowDialog() == DialogResult.OK )
             {
-                FirstCallToReport = true;
                 UpdateMenuAvailability();
                 if (VerifyThatBaseDirectoryIsValid())
                 {
@@ -297,11 +206,6 @@ namespace manualisator
                     }
                 }
             }
-        }
-
-        private void letzteTracedateiÖffnenToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Process.Start(ReportFilename);
         }
 
         private void anzeigenWelcheTemplatesNICHTBenötigtWerdenToolStripMenuItem_Click(object sender, EventArgs e)
@@ -340,12 +244,7 @@ namespace manualisator
         private void UpdateMenuAvailability()
         {
             bool enabled = IsValidBaseDirectory;
-            vorlagenAktualisierenToolStripMenuItem.Enabled = enabled;
-            toolStripMenuItem3.Enabled = enabled;
-            handbücherErzeugenToolStripMenuItem.Enabled = enabled;
-            toolStripMenuItem5.Enabled = enabled;
             anzeigenWelcheTemplatesNICHTBenötigtWerdenToolStripMenuItem.Enabled = enabled;
-            suchenNachEinemTextInAllenVorlagenToolStripMenuItem.Enabled = enabled;
         }
 
         private void toolStripMenuItem5_Click(object sender, EventArgs e)

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Diagnostics;
 using System.Reflection;
 using System.ComponentModel;
+using log4net;
 
 namespace manualisator.DBTools
 {
@@ -13,6 +13,7 @@ namespace manualisator.DBTools
     /// </summary>
     public class TableRow : INotifyPropertyChanged
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private TableSchema _TableSchema;
 
         public event PropertyChangedEventHandler PropertyChanged; //What i have to do with this?
@@ -80,7 +81,7 @@ namespace manualisator.DBTools
 
                 if( (thisValue == null) || !thisValue.Equals(otherValue))
                 {
-                    Trace.TraceInformation("{0}: changed {1} from {2} to {3}",
+                    Log.InfoFormat("{0}: changed {1} from {2} to {3}",
                         this,
                         column.InstanceVariableName,
                         thisValue,
@@ -101,7 +102,6 @@ namespace manualisator.DBTools
                     return (long)GetType().GetProperty(column.InstanceVariableName).GetValue(this);
                 }
             }
-            Trace.Assert(false);
             return 0;
         }
 

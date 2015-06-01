@@ -8,7 +8,6 @@ using manualisator.DBSchema;
 using Word = Microsoft.Office.Interop.Word;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
-using System.Diagnostics;
 
 namespace manualisator.Core
 {
@@ -30,7 +29,6 @@ namespace manualisator.Core
 
         public bool PreInitialize(IDisplayCallback displayCallback)
         {
-            Trace.Assert(Database == null);
             DisplayCallback = displayCallback;
 
             string databaseFilename = Tools.ManualsDatabasePathname;

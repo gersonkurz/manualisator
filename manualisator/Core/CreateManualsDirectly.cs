@@ -8,12 +8,14 @@ using manualisator.DBSchema;
 using Word = Microsoft.Office.Interop.Word;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
-using System.Diagnostics;
+using log4net;
+using System.Reflection;
 
 namespace manualisator.Core
 {
     public class CreateManualsDirectly : LongRunningTask
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType); 
         private readonly List<string> ExcelSheetsToGenerate;
         private int CurrentStep = 1;
         private Word._Application Word;
@@ -144,7 +146,7 @@ namespace manualisator.Core
                     }
                     if(Tools.IsSpecialTemplate(filename))
                     {
-                        Trace.TraceWarning("Ignoring this: {0}", filename);
+                        Log.WarnFormat("Ignoring this: {0}", filename);
                         continue;
                     }
 
@@ -204,6 +206,45 @@ namespace manualisator.Core
             return true;
         }
 
+
+        private void ReplaceTextInFooter(Word.Section section, PartialManualContent pmc)
+        {
+            for (int footerIndex = 1; footerIndex <= section.Footers.Count; ++footerIndex)
+            {
+                var fi = (Microsoft.Office.Interop.Word.WdHeaderFooterIndex)footerIndex;
+                Log.InfoFormat("Looking at this footer;: {0}", fi);
+                Word.HeaderFooter hf = section.Footers[fi];
+                DateTime now = DateTime.Now;
+
+                for (int f = 1; f <= hf.Range.Fields.Count; ++f)
+                {
+                    var field = hf.Range.Fields[f];
+                    Log.InfoFormat("field {0}: {1}", f, field.Type);
+                    if (field.Type == Microsoft.Office.Interop.Word.WdFieldType.wdFieldKeyWord)
+                    {
+                        // presumably, they want to replace this by the text 
+                        field.Select();
+                        field.Delete();
+                        Word.Selection.TypeText(pmc.OrderNr);
+                    }
+                }
+
+                for (int w = 1, wmax = hf.Range.Words.Count; w <= wmax; ++w)
+                {
+                    string mord = hf.Range.Words[w].Text;
+
+                    if (mord.Equals("Monat"))
+                        hf.Range.Words[w].Text = ManualGenerator.GermanMonthNames[now.Month];
+                    else if (mord.Equals("Month"))
+                        hf.Range.Words[w].Text = ManualGenerator.EnglishMonthNames[now.Month];
+                    else if (mord.Equals("Year") || mord.Equals("Jahr"))
+                        hf.Range.Words[w].Text = now.Year.ToString();
+                }
+            }
+
+        }
+
+
         private bool CreateBookmarksLookupForFile(PartialManualContent pmc, string filename, string filenameKey)
         {
             bool failed = false;
@@ -226,13 +267,13 @@ namespace manualisator.Core
 
                         if (BookmarkToFilenames.ContainsKey(bookmarkKey))
                         {
-                            Trace.TraceInformation("- Lesezeichen '{0}' gefunden in '{1}'", context, filename);
+                            Log.InfoFormat("- Lesezeichen '{0}' gefunden in '{1}'", context, filename);
                             BookmarkToFilenames[bookmarkKey].Add(filename);
                             FilenameToBookmarks[filenameKey].Add(bm.Name);
                         }
                         else
                         {
-                            Trace.TraceInformation("- Lesezeichen '{0}' wird nicht benutzt.", context);
+                            Log.InfoFormat("- Lesezeichen '{0}' wird nicht benutzt.", context);
                         }
                     }
                 }
@@ -268,21 +309,11 @@ namespace manualisator.Core
                 {
                     // need to display warning, ask for overwrite
                     var box = new WarnBeforeOverwriteForm(targetFilename);
-                    var result = box.ShowDialog();
-                    if( result == System.Windows.Forms.DialogResult.OK)
+                    if( box.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                     {
-                        // overwrite this time
-                    }
-                    else if( result == System.Windows.Forms.DialogResult.Retry )
-                    {
-                        Program.Settings["WarnBeforeOverwriting"] = false;
-                        Program.PersistentSettings.Save();
-                    }
-                    else
-                    {
-                        // something else: abort
                         return false;
                     }
+                    targetFilename = box.NewFilename;
                 }
             }
 
@@ -320,20 +351,10 @@ namespace manualisator.Core
                     {
                         for (int s = 1, smax = doc.Sections.Count; s <= smax; ++s)
                         {
-                            Word.Section section = doc.Sections[s];
-                            Word.HeaderFooter hf = section.Footers[Microsoft.Office.Interop.Word.WdHeaderFooterIndex.wdHeaderFooterPrimary];
-                            for (int w = 1, wmax = hf.Range.Words.Count; w <= wmax; ++w)
-                            {
-                                string mord = hf.Range.Words[w].Text;
-
-                                if (mord.Equals("Monat"))
-                                    hf.Range.Words[w].Text = ManualGenerator.GermanMonthNames[now.Month];
-                                else if (mord.Equals("Month"))
-                                    hf.Range.Words[w].Text = ManualGenerator.EnglishMonthNames[now.Month];
-                                else if (mord.Equals("Year") || mord.Equals("Jahr"))
-                                    hf.Range.Words[w].Text = now.Year.ToString();
-                            }
+                            ReplaceTextInFooter(doc.Sections[s], pmc);
                         }
+
+                        InsertBreaksBeforeHeaders(doc);
 
                         doc.SaveAs2(targetFilename);
                         DisplayCallback.AddInformation("- '{0}'", targetFilename);
@@ -439,8 +460,7 @@ namespace manualisator.Core
                         return false;
 
                     double percentage = index / ((totalFiles / 100.0));
-                    DisplayCallback.AddInformation("^{0}/{1} = {2:##.##}%: '{3}' für das Lesezeichen {4}", index++, totalFiles, percentage, filename, bookmarkName);
-                    Trace.Assert (!Tools.IsSpecialTemplate(filename));
+                    DisplayCallback.AddInformation("^{0}/{1} = {2:##.##}%: '{3}' für das Lesezeichen {4}", index++, totalFiles, percentage, filename, bookmarkName);                   
                     if (!InsertBookmarkFromDocument(doc, filename, bookmarkName))
                         return false;
                 }
@@ -461,41 +481,61 @@ namespace manualisator.Core
             return true;
         }
 
+        bool InsertBreaksBeforeHeaders(Word._Document doc)
+        {
+            if (Program.Settings.InsertBeforeHeading1 == 0)
+                return true;
+            var breakType = 
+                (Program.Settings.InsertBeforeHeading1 == 1) ?
+                    Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak :
+                    Microsoft.Office.Interop.Word.WdBreakType.wdSectionBreakNextPage;
+
+            Log.InfoFormat("InsertBreaksBeforeHeaders: {0}", breakType);
+
+            Word.Range completeRange = doc.Range();
+
+            object rngStart = completeRange.Start;
+            object rngEnd = completeRange.End;
+
+            while (true)
+            {
+                Log.InfoFormat("Search this range: {0}..{1}", rngStart, rngEnd);
+                var rng = doc.Range(rngStart, rngEnd);
+
+                rng.Find.ClearFormatting();
+                rng.Find.Format = true;
+                rng.Find.Forward = true;
+                rng.Find.ParagraphFormat.OutlineLevel = Microsoft.Office.Interop.Word.WdOutlineLevel.wdOutlineLevel1;
+                if (!rng.Find.Execute())
+                    break;
+
+                if (!rng.Find.Found)
+                    break;
+
+                Log.InfoFormat("Found h1 in {0}..{1}: '{2}'",
+                    rng.Start,
+                    rng.End,
+                    rng.Text);
+
+                object start2 = rng.Start - 1;
+                object end2 = rng.Start;
+                rngStart = rng.End + 1;
+                var oldRange = doc.Range(ref start2, ref end2);
+                Log.InfoFormat("Old trace: {0}", oldRange.Text);
+                oldRange.InsertBreak(breakType);
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// Copy bookmark from to target document
         /// </summary>
         /// <param name="doc"></param>
         /// <param name="bm"></param>
         /// <returns></returns>
-        private bool CopyBookmark(Word._Document doc, Word.Bookmark bm)
+        private bool CopyBookmark(Word._Document doc, Word.Bookmark bm, Word._Document fileToInsert)
         {
-            if( Program.Settings.InsertBeforeHeading1 > 0 )
-            {
-                Word.Range completeRange = bm.Range;
-
-                for (int j = 1, jmax = completeRange.Paragraphs.Count; j <= jmax; ++j)
-                {
-                    if (IsCancelFlagSet())
-                        return false;
-
-                    string name = completeRange.Paragraphs[j].get_Style().NameLocal;
-                    if (name.StartsWith("Überschrift 1;"))
-                    {
-                        object start2 = doc.Content.End - 1;
-                        object end2 = doc.Content.End;
-                        Word.Range rng2 = doc.Range(ref start2, ref end2);
-                        if (Program.Settings.InsertBeforeHeading1 == 1 )
-                        {
-                            rng2.InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdPageBreak);
-                        }
-                        else if(Program.Settings.InsertBeforeHeading1 == 2 )
-                        {
-                            rng2.InsertBreak(Microsoft.Office.Interop.Word.WdBreakType.wdSectionBreakContinuous);
-                        }
-                        break;
-                    }
-                }
-            }
             bm.Range.Copy();
             object start = doc.Content.End - 1;
             object end = doc.Content.End;
@@ -521,7 +561,7 @@ namespace manualisator.Core
                 try
                 {
                     fileToInsert.Activate();
-                    result = CopyBookmark(doc, fileToInsert.Bookmarks[bookmarkName]);
+                    result = CopyBookmark(doc, fileToInsert.Bookmarks[bookmarkName], fileToInsert);
                 }
                 finally
                 {
@@ -568,21 +608,21 @@ namespace manualisator.Core
                         {
                             if (isEnglish && !bm.Name.EndsWith("E"))
                             {
-                                Trace.TraceWarning("Ignore bookmark '{0}' because language is '{1}'", bm.Name, documentStructure.Language);
+                                Log.WarnFormat("Ignore bookmark '{0}' because language is '{1}'", bm.Name, documentStructure.Language);
                                 continue;
                             }
                             else if (!isEnglish && bm.Name.EndsWith("E"))
                             {
-                                Trace.TraceWarning("Ignore bookmark '{0}' because language is '{1}'", bm.Name, documentStructure.Language);
+                                Log.WarnFormat("Ignore bookmark '{0}' because language is '{1}'", bm.Name, documentStructure.Language);
                                 continue;
                             }
 
                             // ok, this bookmark needs to be copied
-                            result = CopyBookmark(doc, bm);
+                            result = CopyBookmark(doc, bm, fileToInsert);
                         }
                         else
                         {
-                            Trace.TraceWarning("Ignoring this bookmark: {0}", bm.Name);
+                            Log.WarnFormat("Ignoring this bookmark: {0}", bm.Name);
                         }
                     }
                 }
@@ -655,15 +695,16 @@ namespace manualisator.Core
             {
                 Word.Bookmark bm = doc.Bookmarks[i];
                 string key = bm.Name.ToLower();
-                if( replacementTable.ContainsKey(key))
+                if (replacementTable.ContainsKey(key))
                 {
                     string value = replacementTable[key];
-                    if(!string.IsNullOrEmpty(value))
-                    {
-                        bm.Range.Text = value;
-                        --i;
-                    }
+                    if (string.IsNullOrEmpty(value))
+                        value = "";
+
+                    bm.Range.Text = value;
+                    --i;
                 }
+                else Log.WarnFormat("Found unknown bookmark '{0}'", bm.Name);
             }
         }
 
@@ -677,23 +718,25 @@ namespace manualisator.Core
         /// <returns></returns>
         private bool InsertDocument(Word._Document doc, string nameOfFileToInsert, PartialManualContent documentStructure)
         {
-            Trace.TraceInformation("AddDocumentToDocument(nameOfFileToInsert:{0})", nameOfFileToInsert);
+            Log.InfoFormat("AddDocumentToDocument(nameOfFileToInsert:{0})", nameOfFileToInsert);
             try
             {
                 string templatePath = Tools.GetDocumentFilename(nameOfFileToInsert);
-                Trace.TraceInformation("- templatePath: {0}", templatePath);
+                Log.InfoFormat("- templatePath: {0}", templatePath);
                 Word._Document fileToInsert = Word.Documents.Open(templatePath);
                 try
                 {
                     fileToInsert.Activate();
 
-                    Trace.TraceInformation("- templateDocument.Bookmarks.Count: {0}", fileToInsert.Bookmarks.Count);
+                    Log.InfoFormat("- templateDocument.Bookmarks.Count: {0}", fileToInsert.Bookmarks.Count);
                     if (fileToInsert.Bookmarks.Count > 0)
                     {
                         var replacementTable = new Dictionary<string,string>();
                         replacementTable["titel_1"] = documentStructure.Title1;
                         replacementTable["titel_2"] = documentStructure.Title2;
                         replacementTable["titel_3"] = documentStructure.Title3;
+                        replacementTable["mon_jahr"] = documentStructure.OrderNr;
+                        replacementTable["hb_typ"] = documentStructure.TypeOfManual;
                         replacementTable["version"] = documentStructure.Version;
                         ReplaceBookmarks(fileToInsert, replacementTable);
                     }

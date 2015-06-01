@@ -2,16 +2,19 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections;
-using System.Diagnostics;
 using System.Text;
 using System.Globalization;
 using System.Xml;
 using System.IO;
+using log4net;
+using System.Reflection;
 
 namespace manualisator.Core
 {
     public static class Tools
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType); 
+
         public static bool IsSpecialTemplate(string name)
         {
             name = Path.GetFileNameWithoutExtension(name).ToUpper();
@@ -38,7 +41,7 @@ namespace manualisator.Core
             output.AppendFormat("SOURCE: {0}\r\n", e.Source);
             output.AppendLine(e.StackTrace);
             string text = output.ToString();
-            Trace.TraceError(text);
+            Log.Error(text);
             return text;
         }
 
@@ -76,7 +79,7 @@ namespace manualisator.Core
             string[] folders = Program.Settings.FilesDirectory.Split(';', ',');
             string baseDirectory = Program.Settings.BaseDirectory;
 
-            Trace.TraceInformation("EnumerateDocuments(baseDirectory: {0}, filesDirectory: {1})", baseDirectory, Program.Settings.FilesDirectory);
+            Log.InfoFormat("EnumerateDocuments(baseDirectory: {0}, filesDirectory: {1})", baseDirectory, Program.Settings.FilesDirectory);
             foreach (string folderName in folders)
             {
                 string folderPath = Path.Combine(baseDirectory, folderName);
@@ -84,7 +87,7 @@ namespace manualisator.Core
                 {
                     foreach (string filename in Directory.GetFiles(folderPath))
                     {
-                        Trace.TraceInformation("EnumerateDocuments() yields '{0}'", filename);
+                        Log.InfoFormat("EnumerateDocuments() yields '{0}'", filename);
                         yield return filename;
                     }
                 }
@@ -101,15 +104,15 @@ namespace manualisator.Core
                 string pathName = Path.Combine(baseDirectory, folderName, fileName);
                 if (File.Exists(pathName))
                 {
-                    Trace.TraceInformation("{0} exists", pathName);
+                    Log.InfoFormat("{0} exists", pathName);
                     return pathName;
                 }
                 else
                 {
-                    Trace.TraceWarning("{0} does not exist", pathName);
+                    Log.WarnFormat("{0} does not exist", pathName);
                 }
             }
-            Trace.TraceError("Document named '{0}' not found in any of these folders: {1}", fileName, folders);
+            Log.ErrorFormat("Document named '{0}' not found in any of these folders: {1}", fileName, folders);
             return null;
         }
 
