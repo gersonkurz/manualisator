@@ -355,6 +355,8 @@ namespace manualisator.Core
                         }
 
                         InsertBreaksBeforeHeaders(doc);
+                        UpdateAllTablesOfContent(doc);
+                        UpdateAllTablesOfFigures(doc);
 
                         doc.SaveAs2(targetFilename);
                         DisplayCallback.AddInformation("- '{0}'", targetFilename);
@@ -481,6 +483,23 @@ namespace manualisator.Core
             return true;
         }
 
+        void UpdateAllTablesOfFigures(Word._Document doc)
+        {
+            doc.TablesOfFigures.Format = Microsoft.Office.Interop.Word.WdTofFormat.wdTOFClassic;
+            foreach(Microsoft.Office.Interop.Word.TableOfFigures tof in doc.TablesOfFigures)
+            {
+                tof.Update();
+            }
+        }
+
+        void UpdateAllTablesOfContent(Word._Document doc)
+        {
+            foreach(Microsoft.Office.Interop.Word.TableOfContents toc in doc.TablesOfContents)
+            {
+                toc.Update();
+            }
+        }
+
         bool InsertBreaksBeforeHeaders(Word._Document doc)
         {
             if (Program.Settings.InsertBeforeHeading1 == 0)
@@ -517,9 +536,9 @@ namespace manualisator.Core
                     rng.End,
                     rng.Text);
 
-                object start2 = rng.Start - 1;
+                object start2 = rng.Start;
                 object end2 = rng.Start;
-                rngStart = rng.End + 1;
+                rngStart = rng.End + 2;
                 var oldRange = doc.Range(ref start2, ref end2);
                 Log.InfoFormat("Old trace: {0}", oldRange.Text);
                 oldRange.InsertBreak(breakType);
@@ -735,7 +754,23 @@ namespace manualisator.Core
                         replacementTable["titel_1"] = documentStructure.Title1;
                         replacementTable["titel_2"] = documentStructure.Title2;
                         replacementTable["titel_3"] = documentStructure.Title3;
-                        replacementTable["mon_jahr"] = documentStructure.OrderNr;
+                        if (Program.Settings.AutoGenerateCurrentDate)
+                        {
+                            DateTime now = DateTime.Now;
+
+                            if (documentStructure.Language == "en")
+                            {
+                                replacementTable["mon_jahr"] = string.Format("{0} {1}", ManualGenerator.EnglishMonthNames[now.Month], now.Year);
+                            }
+                            else
+                            {
+                                replacementTable["mon_jahr"] = string.Format("{0} {1}", ManualGenerator.GermanMonthNames[now.Month], now.Year);
+                            }
+                        }
+                        else
+                        {
+                            replacementTable["mon_jahr"] = documentStructure.OrderNr;
+                        }
                         replacementTable["hb_typ"] = documentStructure.TypeOfManual;
                         replacementTable["version"] = documentStructure.Version;
                         ReplaceBookmarks(fileToInsert, replacementTable);

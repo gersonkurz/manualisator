@@ -3,7 +3,7 @@ SetCompressor /SOLID lzma
 
 Name "MANUALISATOR"
 
-OutFile "MANUALISATOR-SETUP-1.0.5.EXE"
+OutFile "MANUALISATOR-SETUP-1.0.6.EXE"
 
 InstallDir "$PROGRAMFILES\MANUALISATOR"
 InstallDirRegKey HKLM "SOFTWARE\p-nand-q.com\manualisator" "Install_Dir"

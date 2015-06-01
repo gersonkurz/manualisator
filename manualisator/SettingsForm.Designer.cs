@@ -51,6 +51,7 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
             this.cbWarnBeforeOverwriting = new System.Windows.Forms.CheckBox();
+            this.cbAutoGenerateCurrentDate = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btOK
@@ -282,6 +283,17 @@
             this.cbWarnBeforeOverwriting.Text = "Warnen vor dem überschreiben bestehender Dokumente";
             this.cbWarnBeforeOverwriting.UseVisualStyleBackColor = true;
             // 
+            // cbAutoGenerateCurrentDate
+            // 
+            this.cbAutoGenerateCurrentDate.AutoSize = true;
+            this.cbAutoGenerateCurrentDate.Location = new System.Drawing.Point(265, 533);
+            this.cbAutoGenerateCurrentDate.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
+            this.cbAutoGenerateCurrentDate.Name = "cbAutoGenerateCurrentDate";
+            this.cbAutoGenerateCurrentDate.Size = new System.Drawing.Size(390, 29);
+            this.cbAutoGenerateCurrentDate.TabIndex = 31;
+            this.cbAutoGenerateCurrentDate.Text = "Generierungsdatum automatisch einfügen";
+            this.cbAutoGenerateCurrentDate.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AcceptButton = this.btOK;
@@ -289,6 +301,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btCancel;
             this.ClientSize = new System.Drawing.Size(921, 719);
+            this.Controls.Add(this.cbAutoGenerateCurrentDate);
             this.Controls.Add(this.cbWarnBeforeOverwriting);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.comboBox1);
@@ -346,5 +359,6 @@
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox cbWarnBeforeOverwriting;
+        private System.Windows.Forms.CheckBox cbAutoGenerateCurrentDate;
     }
 }

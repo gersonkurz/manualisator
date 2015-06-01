@@ -190,5 +190,17 @@ namespace manualisator.Properties {
                 this["WarnBeforeOverwriting"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutoGenerateCurrentDate {
+            get {
+                return ((bool)(this["AutoGenerateCurrentDate"]));
+            }
+            set {
+                this["AutoGenerateCurrentDate"] = value;
+            }
+        }
     }
 }

@@ -30,6 +30,7 @@ namespace manualisator
             checkBox3.Checked = Program.Settings.CreateDocumentSortOrderFromBookmarks;
             comboBox1.SelectedIndex = Program.Settings.InsertBeforeHeading1;
             cbWarnBeforeOverwriting.Checked = Program.Settings.WarnBeforeOverwriting;
+            cbAutoGenerateCurrentDate.Checked = Program.Settings.AutoGenerateCurrentDate;
         }
 
         private void btOK_Click(object sender, EventArgs e)
@@ -81,8 +82,7 @@ namespace manualisator
             Program.Settings["CreateDocumentSortOrderFromBookmarks"] = checkBox3.Checked ? true : false;
             Program.Settings["InsertBeforeHeading1"] = comboBox1.SelectedIndex;
             Program.Settings["WarnBeforeOverwriting"] = cbWarnBeforeOverwriting.Checked ? true : false;
-
-            
+            Program.Settings["AutoGenerateCurrentDate"] = cbAutoGenerateCurrentDate.Checked ? true : false;
             Program.PersistentSettings.Save();
             Close();
         }
