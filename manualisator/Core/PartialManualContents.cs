@@ -214,8 +214,25 @@ namespace manualisator.Core
         private bool ReadRequiredValue(object[,] values, int i, int j, out DateTime actualValue, string fieldName)
         {
             object o = values[i, j];
-            actualValue = (DateTime) o;
-            if (actualValue == null)
+
+            bool success = false;
+            actualValue = DateTime.Now;
+            if( o is string )
+            {
+                string[] tokens = (o as string).Split('.');
+                if( tokens.Length == 3 )
+                {
+                    actualValue = new DateTime(year: int.Parse(tokens[2]), month: int.Parse(tokens[1]), day: int.Parse(tokens[0]));
+                    success = true;
+                }
+            }
+            else if( o is DateTime )
+            {
+                actualValue = (DateTime)o;
+                success = true;
+            }
+            
+            if (!success)
             {
                 DisplayCallback.AddError(Strings.ErrorRequiredValueXYMissing,
                     CurrentFilename,
